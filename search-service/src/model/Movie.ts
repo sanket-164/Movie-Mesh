@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
-import { count } from "node:console";
-import { release } from "node:os";
 
 const movieSchema = new mongoose.Schema({
+    _id: {
+        type: mongoose.Schema.Types.ObjectId
+    },
     plot: {
         type: String
     },
@@ -10,6 +11,9 @@ const movieSchema = new mongoose.Schema({
         type: [String]
     },
     runtime: {
+        type: Number
+    },
+    metacritic: {
         type: Number
     },
     cast: {
@@ -54,7 +58,7 @@ const movieSchema = new mongoose.Schema({
         type: Number
     },
     imdb: {
-        rating:{
+        rating: {
             type: Number
         },
         votes: {

@@ -13,7 +13,11 @@ class SearchRoute {
     }
 
     private initializeRoutes(): void {
-        this.router.get('/find-movie/:id', this.searchController.findMovieById);
+        this.router.get('/', (req, res) => {
+            res.send('Search Route is working');
+        });
+        this.router.get('/movies', this.searchController.searchMovies)
+        this.router.get('/movies/:id', this.searchController.findMovieById);
     }
 }
 
