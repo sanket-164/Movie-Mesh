@@ -22,9 +22,12 @@ class AuthenticationServer {
     }
 
     private initializeRoutes(): void {
-        this.app.use('/auth', new AuthRoute().router);
         this.app.get('/', (req, res) => {
             res.send('Authentication Server is running');
+        });
+        this.app.use('/auth', new AuthRoute().router);
+        this.app.use((req, res) => {
+            res.status(404).send('Route not found');
         });
     }
 

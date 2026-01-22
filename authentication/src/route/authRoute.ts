@@ -18,6 +18,7 @@ class AuthRoute {
         });
         this.router.post('/signup', this.authController.signUp);
         this.router.post('/signin', this.authController.signIn);
+        this.router.post('/forgot-password', this.authController.forgotPassword);
     }
 }
 
