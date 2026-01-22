@@ -13,7 +13,7 @@ abstract class KafkaConsumer {
     async start(): Promise<void> {
         await this.consumer.connect();
 
-        await this.consumer.subscribe({ topic: this.topic, fromBeginning: false });
+        await this.consumer.subscribe({ topic: this.topic, fromBeginning: true });
 
         await this.consumer.run({
             eachMessage: async (payload: EachMessagePayload) => {

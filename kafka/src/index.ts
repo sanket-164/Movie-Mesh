@@ -1,11 +1,24 @@
 import AuthConsumer from "./consumer/auth.consumer";
+import SearchConsumer from "./consumer/search.consumer";
 
-async function startConsumers() {
-    const consumers = [
-        new AuthConsumer(),
-    ];
+// Application bootstrap
+class ConsumerManager {
+    private consumers;
 
-    await Promise.all(consumers.map((c) => c.start()));
+    constructor() {
+        this.consumers = [
+            new AuthConsumer(),
+            new SearchConsumer(),
+        ];
+    }
+
+    public async start(): Promise<void> {
+        try {
+            await Promise.all(this.consumers.map(consumer => consumer.start()));
+        } catch (error) {
+            console.error("Failed to start consumers:", error);
+        }
+    }
 }
 
-startConsumers().catch(console.error);
+new ConsumerManager().start();
