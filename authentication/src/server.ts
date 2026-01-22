@@ -43,5 +43,5 @@ class AuthenticationServer {
     }
 }
 
-const server = new AuthenticationServer(3000);
+const server = new AuthenticationServer(process.env.PORT ? parseInt(process.env.PORT) : 3000);
 server.listen();

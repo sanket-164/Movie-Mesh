@@ -1,5 +1,7 @@
 import type { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
+import JwtUtil from '../util/jwt';
+import CryptoUtil from '../util/crypto';
 
 type SignUpBody = {
     name: string;
@@ -43,11 +45,13 @@ class AuthController {
                 return;
             }
 
+            const hashedPassword = CryptoUtil.hashPassword(password);
+
             const user = await prisma.user.create({
                 data: {
                     name,
                     email,
-                    password,
+                    password: hashedPassword,
                 },
             });
 
@@ -72,12 +76,14 @@ class AuthController {
                 select: { id: true, password: true },
             });
 
-            if (!user || user.password !== password) {
+            if (!user || !CryptoUtil.comparePasswords(password, user.password)) {
                 res.status(401).json({ error: 'Invalid email or password' });
                 return;
             }
 
-            res.status(200).json({ id: user.id });
+            const token = JwtUtil.generateToken({ id: user.id });
+
+            res.status(200).json({ token });
         } catch (error) {
             console.error('Error during user sign-in:', error);
             res.status(500).json({ error: 'Internal server error' });
@@ -98,14 +104,16 @@ class AuthController {
                 select: { id: true, password: true },
             });
 
-            if (!user || user.password !== password) {
+            if (!user || !CryptoUtil.comparePasswords(password, user.password)) {
                 res.status(401).json({ error: 'Invalid email or password' });
                 return;
             }
 
+            const hashedNewPassword = CryptoUtil.hashPassword(newPassword);
+
             const updatedUser = await prisma.user.update({
                 where: { email },
-                data: { password: newPassword },
+                data: { password: hashedNewPassword },
                 select: { id: true },
             });
 
@@ -130,7 +138,7 @@ class AuthController {
                 select: { id: true, password: true },
             });
 
-            if (!user || user.password !== password) {
+            if (!user || !CryptoUtil.comparePasswords(password, user.password)) {
                 res.status(401).json({ error: 'Invalid email or password' });
                 return;
             }
