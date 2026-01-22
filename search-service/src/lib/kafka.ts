@@ -2,7 +2,7 @@ import { Kafka } from "kafkajs";
 
 class KafkaClient {
     private static instance: KafkaClient;
-    private kafka: Kafka;
+    public kafka: Kafka;
 
     private constructor() {
         this.kafka = new Kafka({

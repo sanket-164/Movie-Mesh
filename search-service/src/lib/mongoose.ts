@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 class MongooseService {
     private static instance: MongooseService;
 
-    private constructor() {}
+    private constructor() { }
 
     public static getInstance(): MongooseService {
         if (!MongooseService.instance) {
@@ -15,9 +15,7 @@ class MongooseService {
     public async connect(uri: string): Promise<void> {
         try {
             await mongoose.connect(uri);
-            console.log("Connected to MongoDB");
         } catch (error) {
-            console.error("Error connecting to MongoDB:", error);
             throw error;
         }
     }

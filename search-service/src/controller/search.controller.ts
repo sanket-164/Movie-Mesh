@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import Movie from '../model/Movie';
 import mongoose from 'mongoose';
+import SearchProducer from '../producer/search.producer';
 
 type MovieType = typeof Movie;
 
@@ -17,6 +18,12 @@ type SearchMoviesQuery = {
 };
 
 class SearchController {
+    private searchProducer;
+
+    constructor() {
+        this.searchProducer = SearchProducer.getInstance();
+    }
+
     public findMovieById = async (req: Request<FindMovieByIdParams, {}, {}, {}>, res: Response): Promise<void> => {
         const movieId = req.params.id;
 
@@ -34,6 +41,11 @@ class SearchController {
             }
 
             res.status(200).json(movie);
+
+            await this.searchProducer.sendMessage('user-search', {
+                userId: req.user || 0,
+                query: req.url
+            });
         } catch (error) {
             res.status(500).json({ message: 'Internal server error' });
         }
@@ -84,7 +96,12 @@ class SearchController {
 
             const movies: MovieType[] = await Movie.aggregate(aggregationPipeline);
 
-            res.status(200).json(movies)
+            res.status(200).json(movies);
+
+            await this.searchProducer.sendMessage('user-search', {
+                userId: req.user || 0,
+                query: req.url
+            });
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Internal server error' });

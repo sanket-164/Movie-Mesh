@@ -34,21 +34,21 @@ class AuthenticationServer {
         });
     }
 
-    private connectDatabase(): void {
+    private async connectDatabase(): Promise<void> {
         try {
-            PrismaService.getInstance().connect();
-            console.log("\x1b[34mConnected to the database successfully!\x1b[0m");
+            await PrismaService.getInstance().connect();
+            console.log("\x1b[34mConnected to MySQL successfully!\x1b[0m");
         } catch (error) {
-            console.error('\x1b[31mFailed to connect to the database\x1b[0m', error);
+            console.error('\x1b[31mFailed to connect to MySQL\x1b[0m', error);
         }
     }
 
-    private connectProducer(): void {
+    private async connectProducer(): Promise<void> {
         try {
-            AuthProducer.getInstance().connect();
-            console.log('\x1b[34mKafka Producer connected successfully!\x1b[0m');
+            await AuthProducer.getInstance().connect();
+            console.log('\x1b[34mAuth Producer connected successfully!\x1b[0m');
         } catch (error) {
-            console.error('\x1b[31mFailed to connect Kafka Producer\x1b[0m', error);
+            console.error('\x1b[31mFailed to connect Auth Producer\x1b[0m', error);
         }
     }
 

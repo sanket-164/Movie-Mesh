@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import SearchRoute from './route/search.route';
 import MongooseService from './lib/mongoose';
+import SearchProducer from './producer/search.producer';
 
 class SearchServer {
     private app: express.Express;
@@ -14,6 +15,7 @@ class SearchServer {
         this.initializeMiddlewares();
         this.initializeRoutes();
         this.connectToDatabase();
+        this.connectProducer();
     }
 
     private initializeMiddlewares(): void {
@@ -38,9 +40,18 @@ class SearchServer {
 
         try {
             await mongooseService.connect(mongoUri);
-            console.log("\x1b[34mConnected to the database successfully!\x1b[0m");
+            console.log("\x1b[34mConnected to MongoDB successfully!\x1b[0m");
         } catch (error) {
-            console.error('\x1b[31mFailed to connect to the database\x1b[0m', error);
+            console.error('\x1b[31mFailed to connect to MongoDB\x1b[0m', error);
+        }
+    }
+
+    private async connectProducer(): Promise<void> {
+        try {
+            await SearchProducer.getInstance().connect();
+            console.log("\x1b[34mSearch Producer connected successfully!\x1b[0m");
+        } catch (error) {
+            console.error('\x1b[31mFailed to connect Search Producer\x1b[0m', error);
         }
     }
 
