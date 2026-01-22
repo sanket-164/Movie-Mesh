@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 
-import AuthRoute from './route/authRoute';
+import AuthRoute from './route/auth.route';
 
 class AuthenticationServer {
     private app: express.Express;

@@ -18,6 +18,11 @@ type ForgotPasswordBody = {
     newPassword: string;
 }
 
+type DeleteUserBody = {
+    email: string;
+    password: string;
+}
+
 class AuthController {
     public signUp = async (req: Request<{}, {}, SignUpBody, {}>, res: Response): Promise<void> => {
         const { name, email, password } = req.body;
@@ -107,6 +112,36 @@ class AuthController {
             res.status(200).json({ id: updatedUser.id });
         } catch (error) {
             console.error('Error during user password update:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+
+    public deleteUser = async (req: Request<{}, {}, DeleteUserBody, {}>, res: Response): Promise<void> => {
+        const { email, password } = req.body;
+        
+        try {
+            if(!email || !password) {
+                res.status(400).json({ error: 'Missing required fields' });
+                return;
+            }
+
+            const user = await prisma.user.findUnique({
+                where: { email },
+                select: { id: true, password: true },
+            });
+
+            if (!user || user.password !== password) {
+                res.status(401).json({ error: 'Invalid email or password' });
+                return;
+            }
+
+            await prisma.user.delete({
+                where: { email }
+            });
+
+            res.status(200).json({ message: 'User deleted successfully' });
+        } catch (error) {
+            console.error('Error during user deletion:', error);
             res.status(500).json({ error: 'Internal server error' });
         }
     }
