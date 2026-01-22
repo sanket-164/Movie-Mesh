@@ -13,7 +13,7 @@ class AuthenticationServer {
 
         this.initializeMiddlewares();
         this.initializeRoutes();
-        this.initializeDatabase();
+        this.connectDatabase();
     }
 
     private initializeMiddlewares(): void {
@@ -32,7 +32,7 @@ class AuthenticationServer {
         });
     }
 
-    private initializeDatabase(): void {
+    private connectDatabase(): void {
         PrismaService.getInstance().connect();
     }
 

@@ -3,27 +3,22 @@ import { prisma } from '../lib/prisma';
 import JwtUtil from '../util/jwt';
 import CryptoUtil from '../util/crypto';
 
-type SignUpBody = {
+type User = {
+    id: number;
     name: string;
     email: string;
     password: string;
-};
-
-type SignInBody = {
-    email: string;
-    password: string;
 }
 
-type ForgotPasswordBody = {
-    email: string;
-    password: string;
+type SignUpBody = Omit<User, 'id'>;
+
+type SignInBody = Omit<User, 'id' | 'name'>;
+
+type ForgotPasswordBody = SignInBody & {
     newPassword: string;
 }
 
-type DeleteUserBody = {
-    email: string;
-    password: string;
-}
+type DeleteUserBody = SignInBody;
 
 class AuthController {
     public signUp = async (req: Request<{}, {}, SignUpBody, {}>, res: Response): Promise<void> => {
