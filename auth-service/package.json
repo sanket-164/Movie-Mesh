@@ -1,5 +1,5 @@
 {
-  "name": "authentication",
+  "name": "auth-service",
   "version": "1.0.0",
   "description": "Authentication microservice for the Movie Search Application",
   "main": "dist/server.js",

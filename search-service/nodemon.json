@@ -2,5 +2,5 @@
   "watch": ["src"],
   "ext": "ts",
   "ignore": ["src/**/*.spec.ts"],
-  "exec": "tsx src/server.ts"
+  "exec": "tsx -r dotenv/config src/server.ts"
 }

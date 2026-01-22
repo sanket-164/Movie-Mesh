@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import SearchRoute from './route/search.route';
 import MongooseService from './lib/mongoose';
 
 class SearchServer {
@@ -25,6 +26,7 @@ class SearchServer {
         this.app.get('/', (req, res) => {
             res.send('Search Server is running');
         });
+        this.app.use('/search', new SearchRoute().router);
         this.app.use((req, res) => {
             res.status(404).send('Route not found');
         });
@@ -32,7 +34,7 @@ class SearchServer {
 
     private async connectToDatabase(): Promise<void> {
         const mongooseService = MongooseService.getInstance();
-        const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/moviedb';
+        const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/search-service';
 
         try {
             await mongooseService.connect(mongoUri);
@@ -48,5 +50,5 @@ class SearchServer {
     }
 }
 
-const server = new SearchServer(process.env.PORT ? parseInt(process.env.PORT) : 3000);
+const server = new SearchServer(process.env.PORT ? parseInt(process.env.PORT) : 5000);
 server.listen();
