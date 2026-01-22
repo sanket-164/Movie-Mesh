@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-
+import PrismaService from './lib/prisma';
 import AuthRoute from './route/auth.route';
 
 class AuthenticationServer {
@@ -13,6 +13,7 @@ class AuthenticationServer {
 
         this.initializeMiddlewares();
         this.initializeRoutes();
+        this.initializeDatabase();
     }
 
     private initializeMiddlewares(): void {
@@ -29,6 +30,10 @@ class AuthenticationServer {
         this.app.use((req, res) => {
             res.status(404).send('Route not found');
         });
+    }
+
+    private initializeDatabase(): void {
+        PrismaService.getInstance().connect();
     }
 
     public listen(): void {
