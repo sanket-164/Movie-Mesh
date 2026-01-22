@@ -14,13 +14,21 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
-  password  String
-  name      String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  authLogs  AuthLog[]
+  id         Int         @id @default(autoincrement())
+  email      String      @unique
+  password   String
+  name       String?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  authLogs   AuthLog[]
+  searchLogs SearchLog[]
+}
+
+enum UserAction {
+  LOGIN
+  LOGOUT
+  PASSWORD_RESET
+  DELETE_ACCOUNT
 }
 
 model AuthLog {
@@ -32,8 +40,11 @@ model AuthLog {
   user User @relation(fields: [userId], references: [id])
 }
 
-enum UserAction {
-  LOGIN
-  LOGOUT
-  PASSWORD_RESET
+model SearchLog {
+  id        Int      @id @default(autoincrement())
+  query     String
+  userId    Int
+  timestamp DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
 }
