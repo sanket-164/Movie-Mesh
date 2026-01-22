@@ -33,7 +33,11 @@ class AuthenticationServer {
     }
 
     private connectDatabase(): void {
-        PrismaService.getInstance().connect();
+        try {
+            PrismaService.getInstance().connect();
+        } catch (error) {
+            console.error('Failed to connect to the database', error);
+        }
     }
 
     public listen(): void {
