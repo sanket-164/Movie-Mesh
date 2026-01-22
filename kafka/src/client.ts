@@ -1,11 +1,11 @@
-import { Kafka } from "kafkajs";
+import kafka from 'kafkajs';
 
 class KafkaClient {
     private static instance: KafkaClient;
-    public kafka: Kafka;
+    public kafka: kafka.Kafka;
 
     private constructor() {
-        this.kafka = new Kafka({
+        this.kafka = new kafka.Kafka({
             clientId: "movie-search-service",
             brokers: ["localhost:9092"],
         });
@@ -15,11 +15,8 @@ class KafkaClient {
         if (!KafkaClient.instance) {
             KafkaClient.instance = new KafkaClient();
         }
-        return KafkaClient.instance;
-    }
 
-    public getProducer() {
-        return this.kafka.producer();
+        return KafkaClient.instance;
     }
 }
 
