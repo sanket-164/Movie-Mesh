@@ -38,14 +38,15 @@ class SearchServer {
 
         try {
             await mongooseService.connect(mongoUri);
+            console.log("\x1b[34mConnected to the database successfully!\x1b[0m");
         } catch (error) {
-            console.error('Failed to connect to the database', error);
+            console.error('\x1b[31mFailed to connect to the database\x1b[0m', error);
         }
     }
 
     public listen(): void {
         this.app.listen(this.port, () => {
-            console.log(`Search server is listening at http://localhost:${this.port}`);
+            console.log(`\x1b[34mSearch server is listening at http://localhost:${this.port}\x1b[0m`);
         });
     }
 }

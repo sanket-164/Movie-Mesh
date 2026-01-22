@@ -1,0 +1,26 @@
+import { Kafka } from "kafkajs";
+
+class KafkaClient {
+    private static instance: KafkaClient;
+    public kafka: Kafka;
+
+    private constructor() {
+        this.kafka = new Kafka({
+            clientId: "auth-service",
+            brokers: ["localhost:9092"],
+        });
+    }
+
+    public static getInstance(): KafkaClient {
+        if (!KafkaClient.instance) {
+            KafkaClient.instance = new KafkaClient();
+        }
+        return KafkaClient.instance;
+    }
+
+    public getProducer() {
+        return this.kafka.producer();
+    }
+}
+
+export default KafkaClient;

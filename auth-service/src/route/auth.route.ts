@@ -1,10 +1,9 @@
 import express from 'express';
-
 import AuthController from '../controller/auth.controller';
 
 class AuthRoute {
     public router: express.Router;
-    private authController: AuthController = new AuthController();
+    private authController: AuthController;
 
     constructor() {
         this.router = express.Router();
@@ -18,7 +17,7 @@ class AuthRoute {
         });
         this.router.post('/signup', this.authController.signUp);
         this.router.post('/signin', this.authController.signIn);
-        this.router.post('/forgot-password', this.authController.forgotPassword);
+        this.router.post('/reset-password', this.authController.resetPassword);
         this.router.delete('/delete-user', this.authController.deleteUser);
     }
 }

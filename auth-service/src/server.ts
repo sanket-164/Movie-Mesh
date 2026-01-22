@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import PrismaService from './lib/prisma';
 import AuthRoute from './route/auth.route';
+import AuthProducer from './producer/auth.producer';
 
 class AuthenticationServer {
     private app: express.Express;
@@ -14,6 +15,7 @@ class AuthenticationServer {
         this.initializeMiddlewares();
         this.initializeRoutes();
         this.connectDatabase();
+        this.connectProducer();
     }
 
     private initializeMiddlewares(): void {
@@ -35,14 +37,24 @@ class AuthenticationServer {
     private connectDatabase(): void {
         try {
             PrismaService.getInstance().connect();
+            console.log("\x1b[34mConnected to the database successfully!\x1b[0m");
         } catch (error) {
-            console.error('Failed to connect to the database', error);
+            console.error('\x1b[31mFailed to connect to the database\x1b[0m', error);
+        }
+    }
+
+    private connectProducer(): void {
+        try {
+            AuthProducer.getInstance().connect();
+            console.log('\x1b[34mKafka Producer connected successfully!\x1b[0m');
+        } catch (error) {
+            console.error('\x1b[31mFailed to connect Kafka Producer\x1b[0m', error);
         }
     }
 
     public listen(): void {
         this.app.listen(this.port, () => {
-            console.log(`Authentication server is listening at http://localhost:${this.port}`);
+            console.log(`\x1b[34mAuthentication server is listening at http://localhost:${this.port}\x1b[0m`);
         });
     }
 }

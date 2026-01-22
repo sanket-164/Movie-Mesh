@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 import JwtUtil from '../util/jwt';
 import CryptoUtil from '../util/crypto';
+import AuthProducer from '../producer/auth.producer';
 
 type User = {
     id: number;
@@ -21,6 +22,8 @@ type ForgotPasswordBody = SignInBody & {
 type DeleteUserBody = SignInBody;
 
 class AuthController {
+    private authProducer = AuthProducer.getInstance();
+
     public signUp = async (req: Request<{}, {}, SignUpBody, {}>, res: Response): Promise<void> => {
         const { name, email, password } = req.body;
 
@@ -29,14 +32,14 @@ class AuthController {
                 res.status(400).json({ error: 'Missing required fields' });
                 return;
             }
-            
+
             const existingUser = await prisma.user.findUnique({
                 where: { email },
                 select: { id: true },
             });
 
             if (existingUser) {
-                res.status(409).json({ error: 'User with this email already exists'});
+                res.status(409).json({ error: 'User with this email already exists' });
                 return;
             }
 
@@ -51,6 +54,8 @@ class AuthController {
             });
 
             res.status(201).json({ id: user.id });
+
+            await this.authProducer.sendMessage('user-auth', { userId: user.id, action: 'SIGNUP' });
         } catch (error) {
             console.error('Error during user sign-up:', error);
             res.status(500).json({ error: 'Internal server error' });
@@ -61,7 +66,7 @@ class AuthController {
         const { email, password } = req.body;
 
         try {
-            if(!email || !password) {
+            if (!email || !password) {
                 res.status(400).json({ error: 'Missing required fields' });
                 return;
             }
@@ -79,17 +84,19 @@ class AuthController {
             const token = JwtUtil.generateToken({ id: user.id });
 
             res.status(200).json({ token });
+
+            await this.authProducer.sendMessage('user-auth', { userId: user.id, action: 'SIGNIN' });
         } catch (error) {
             console.error('Error during user sign-in:', error);
             res.status(500).json({ error: 'Internal server error' });
         }
     }
 
-    public forgotPassword = async (req: Request<{}, {}, ForgotPasswordBody, {}>, res: Response): Promise<void> => {
+    public resetPassword = async (req: Request<{}, {}, ForgotPasswordBody, {}>, res: Response): Promise<void> => {
         const { email, password, newPassword } = req.body;
 
         try {
-            if(!email || !password || !newPassword) {
+            if (!email || !password || !newPassword) {
                 res.status(400).json({ error: 'Missing required fields' });
                 return;
             }
@@ -113,6 +120,8 @@ class AuthController {
             });
 
             res.status(200).json({ id: updatedUser.id });
+
+            await this.authProducer.sendMessage('user-auth', { userId: user.id, action: 'PASSWORD_RESET' });
         } catch (error) {
             console.error('Error during user password update:', error);
             res.status(500).json({ error: 'Internal server error' });
@@ -121,9 +130,9 @@ class AuthController {
 
     public deleteUser = async (req: Request<{}, {}, DeleteUserBody, {}>, res: Response): Promise<void> => {
         const { email, password } = req.body;
-        
+
         try {
-            if(!email || !password) {
+            if (!email || !password) {
                 res.status(400).json({ error: 'Missing required fields' });
                 return;
             }
@@ -143,6 +152,8 @@ class AuthController {
             });
 
             res.status(200).json({ message: 'User deleted successfully' });
+
+            await this.authProducer.sendMessage('user-auth', { userId: user.id, action: 'DELETE_ACCOUNT' });
         } catch (error) {
             console.error('Error during user deletion:', error);
             res.status(500).json({ error: 'Internal server error' });
