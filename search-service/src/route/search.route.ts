@@ -1,5 +1,6 @@
 import express from 'express';
 import SearchController from '../controller/search.controller';
+import SearchMiddleware from '../middleware/search.middleware';
 
 class SearchRoute {
     public router: express.Router;
@@ -16,6 +17,9 @@ class SearchRoute {
         this.router.get('/', (req, res) => {
             res.send('Search Route is working');
         });
+
+        this.router.use(SearchMiddleware.authenticateToken);
+
         this.router.get('/movies', this.searchController.searchMovies)
         this.router.get('/movies/:id', this.searchController.findMovieById);
     }
