@@ -17,6 +17,8 @@ type SearchMoviesQuery = {
     q: string;
 };
 
+const SEARCH_TOPIC = 'user-search';
+
 class SearchController {
     private searchProducer;
 
@@ -42,7 +44,7 @@ class SearchController {
 
             res.status(200).json(movie);
 
-            await this.searchProducer.sendMessage('user-search', {
+            await this.searchProducer.sendMessage(SEARCH_TOPIC, {
                 userId: req.user || 0,
                 query: req.url
             });
@@ -98,7 +100,7 @@ class SearchController {
 
             res.status(200).json(movies);
 
-            await this.searchProducer.sendMessage('user-search', {
+            await this.searchProducer.sendMessage(SEARCH_TOPIC, {
                 userId: req.user || 0,
                 query: req.url
             });

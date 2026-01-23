@@ -21,6 +21,8 @@ type ForgotPasswordBody = SignInBody & {
 
 type DeleteUserBody = SignInBody;
 
+const AUTH_TOPIC = 'user-auth';
+
 class AuthController {
     private authProducer = AuthProducer.getInstance();
 
@@ -55,7 +57,7 @@ class AuthController {
 
             res.status(201).json({ id: user.id });
 
-            await this.authProducer.sendMessage('user-auth', { userId: user.id, action: 'SIGNUP' });
+            await this.authProducer.sendMessage(AUTH_TOPIC, { userId: user.id, action: 'SIGNUP' });
         } catch (error) {
             console.error('Error during user sign-up:', error);
             res.status(500).json({ error: 'Internal server error' });
@@ -85,7 +87,7 @@ class AuthController {
 
             res.status(200).json({ token });
 
-            await this.authProducer.sendMessage('user-auth', { userId: user.id, action: 'SIGNIN' });
+            await this.authProducer.sendMessage(AUTH_TOPIC, { userId: user.id, action: 'SIGNIN' });
         } catch (error) {
             console.error('Error during user sign-in:', error);
             res.status(500).json({ error: 'Internal server error' });
@@ -121,7 +123,7 @@ class AuthController {
 
             res.status(200).json({ id: updatedUser.id });
 
-            await this.authProducer.sendMessage('user-auth', { userId: user.id, action: 'PASSWORD_RESET' });
+            await this.authProducer.sendMessage(AUTH_TOPIC, { userId: user.id, action: 'PASSWORD_RESET' });
         } catch (error) {
             console.error('Error during user password update:', error);
             res.status(500).json({ error: 'Internal server error' });
@@ -153,7 +155,7 @@ class AuthController {
 
             res.status(200).json({ message: 'User deleted successfully' });
 
-            await this.authProducer.sendMessage('user-auth', { userId: user.id, action: 'DELETE_ACCOUNT' });
+            await this.authProducer.sendMessage(AUTH_TOPIC, { userId: user.id, action: 'DELETE_ACCOUNT' });
         } catch (error) {
             console.error('Error during user deletion:', error);
             res.status(500).json({ error: 'Internal server error' });

@@ -19,7 +19,9 @@ class KafkaClient {
     }
 
     public getProducer() {
-        return this.kafka.producer();
+        return this.kafka.producer(
+            { allowAutoTopicCreation: true }
+        );
     }
 }
 

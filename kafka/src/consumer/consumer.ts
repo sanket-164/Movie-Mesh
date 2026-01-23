@@ -3,17 +3,17 @@ import KafkaClient from "../client";
 
 abstract class KafkaConsumer {
     protected consumer: Consumer;
-    protected topic: string;
+    private topic: string;
 
     constructor(groupId: string, topic: string) {
         this.topic = topic;
-        this.consumer = KafkaClient.getInstance().kafka.consumer({ groupId });
+        this.consumer = KafkaClient.getInstance().kafka.consumer({ groupId, allowAutoTopicCreation: true });
     }
 
     async start(): Promise<void> {
         await this.consumer.connect();
 
-        await this.consumer.subscribe({ topic: this.topic, fromBeginning: true });
+        await this.consumer.subscribe({ topic: this.topic });
 
         await this.consumer.run({
             eachMessage: async (payload: EachMessagePayload) => {

@@ -1,7 +1,6 @@
 import AuthConsumer from "./consumer/auth.consumer";
 import SearchConsumer from "./consumer/search.consumer";
 
-// Application bootstrap
 class ConsumerManager {
     private consumers;
 
