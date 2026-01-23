@@ -7,7 +7,7 @@ class KafkaClient {
     private constructor() {
         this.kafka = new kafka.Kafka({
             clientId: "movie-search-service",
-            brokers: ["localhost:9092"],
+            brokers: [process.env.KAFKA_BROKER || "localhost:9092"],
         });
     }
 

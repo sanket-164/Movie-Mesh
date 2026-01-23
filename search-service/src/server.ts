@@ -14,7 +14,7 @@ class SearchServer {
 
         this.initializeMiddlewares();
         this.initializeRoutes();
-        this.connectToDatabase();
+        this.connectDatabase();
         this.connectProducer();
     }
 
@@ -34,9 +34,13 @@ class SearchServer {
         });
     }
 
-    private async connectToDatabase(): Promise<void> {
+    private async connectDatabase(): Promise<void> {
         const mongooseService = MongooseService.getInstance();
-        const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/search-service';
+        const mongoUri = process.env.MONGO_URI;
+
+        if (!mongoUri) {
+            throw new Error("MONGO_URI is not defined in environment variables");
+        }
 
         try {
             await mongooseService.connect(mongoUri);

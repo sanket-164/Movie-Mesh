@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import JwtUtil from "../util/jwt";
 
 type decodedToken = {
-    id: string;
+    id: number;
     iat: number;
     exp: number;
 };
@@ -19,6 +19,7 @@ class SearchMiddleware {
 
         try {
             const decoded = JwtUtil.verifyToken(token) as decodedToken;
+            console.log("Authenticated user ID:", decoded.id);
             req.user = decoded.id;
             next();
         } catch (error) {
