@@ -29,7 +29,6 @@ enum UserAction {
   SIGNIN
   SIGNOUT
   PASSWORD_RESET
-  DELETE_ACCOUNT
 }
 
 model AuthLog {

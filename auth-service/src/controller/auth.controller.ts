@@ -129,38 +129,6 @@ class AuthController {
             res.status(500).json({ error: 'Internal server error' });
         }
     }
-
-    public deleteUser = async (req: Request<{}, {}, DeleteUserBody, {}>, res: Response): Promise<void> => {
-        const { email, password } = req.body;
-
-        try {
-            if (!email || !password) {
-                res.status(400).json({ error: 'Missing required fields' });
-                return;
-            }
-
-            const user = await prisma.user.findUnique({
-                where: { email },
-                select: { id: true, password: true },
-            });
-
-            if (!user || !CryptoUtil.comparePasswords(password, user.password)) {
-                res.status(401).json({ error: 'Invalid email or password' });
-                return;
-            }
-
-            await prisma.user.delete({
-                where: { email }
-            });
-
-            res.status(200).json({ message: 'User deleted successfully' });
-
-            await this.authProducer.sendMessage(AUTH_TOPIC, { userId: user.id, action: 'DELETE_ACCOUNT' });
-        } catch (error) {
-            console.error('Error during user deletion:', error);
-            res.status(500).json({ error: 'Internal server error' });
-        }
-    }
 }
 
 export default AuthController;

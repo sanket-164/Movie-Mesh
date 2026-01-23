@@ -18,7 +18,6 @@ class AuthRoute {
         this.router.post('/signup', this.authController.signUp);
         this.router.post('/signin', this.authController.signIn);
         this.router.post('/reset-password', this.authController.resetPassword);
-        this.router.delete('/delete-user', this.authController.deleteUser);
     }
 }
 
