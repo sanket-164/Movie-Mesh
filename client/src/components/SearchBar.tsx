@@ -13,6 +13,7 @@ const SearchBar = ({
   const [fields, setFields] = useState({
     title: activeFields.includes("title"),
     plot: activeFields.includes("plot"),
+    genres: activeFields.includes("genres"),
     cast: activeFields.includes("cast"),
     directors: activeFields.includes("directors"),
     writers: activeFields.includes("writers"),

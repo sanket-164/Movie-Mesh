@@ -27,7 +27,7 @@ const Search = () => {
       const response = await searchByQuery(queryString);
 
       setMovies(response.data as MovieCardType[]);
-      setTotalResults(response.totalMovies[0].count || 0);
+      setTotalResults(response.totalMovies[0]?.count || 0);
       setLoading(false);
     }
 
