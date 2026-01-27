@@ -4,6 +4,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Search from "./pages/Search";
 import Protect from "./components/Protect";
+import Movie from "./pages/Movie";
 
 function App() {
   const navigate = useNavigate();
@@ -26,6 +27,14 @@ function App() {
           element={
             <Protect>
               <Search />
+            </Protect>
+          }
+        />
+        <Route
+          path="/movie/:id"
+          element={
+            <Protect>
+              <Movie />
             </Protect>
           }
         />
