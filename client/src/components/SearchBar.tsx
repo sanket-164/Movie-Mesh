@@ -1,36 +1,39 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const SearchBar = ({
-  onSearch,
+  setMovieSelectedId,
 }: {
-  onSearch: (params: { query: string; fields: string[] }) => void;
+  setMovieSelectedId: React.Dispatch<React.SetStateAction<string | null>>;
 }) => {
-  const [query, setQuery] = useState("");
-  const [filters, setFilters] = useState({
-    title: true,
-    plot: false,
-    cast: false,
-    directors: false,
-    writers: false,
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [query, setQuery] = useState(searchParams.get("q") || "");
+  const activeFields = (searchParams.get("path") || "title").split(",");
+
+  const [fields, setFields] = useState({
+    title: activeFields.includes("title"),
+    plot: activeFields.includes("plot"),
+    cast: activeFields.includes("cast"),
+    directors: activeFields.includes("directors"),
+    writers: activeFields.includes("writers"),
   });
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilters({
-      ...filters,
+    setFields({
+      ...fields,
       [e.target.name]: e.target.checked,
     });
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const activeFields = Object.keys(filters).filter(
-      (key) => filters[key as keyof typeof filters],
-    );
-
-    onSearch({
-      query,
-      fields: activeFields,
+    setMovieSelectedId(null);
+    setSearchParams({
+      q: query,
+      path: Object.keys(fields)
+        .filter((field) => fields[field as keyof typeof fields])
+        .join(","),
+      page: "1",
     });
   };
 
@@ -50,17 +53,17 @@ const SearchBar = ({
               />
             </div>
 
-            {/* Filters */}
+            {/* Fields */}
             <div className="col-12 col-md-4 col-lg-4">
               <div className="d-flex flex-wrap gap-3">
-                {Object.keys(filters).map((field) => (
+                {Object.keys(fields).map((field) => (
                   <div className="form-check" key={field}>
                     <input
                       className="form-check-input"
                       type="checkbox"
                       name={field}
                       id={field}
-                      checked={filters[field as keyof typeof filters]}
+                      checked={fields[field as keyof typeof fields]}
                       onChange={handleCheckboxChange}
                     />
                     <label

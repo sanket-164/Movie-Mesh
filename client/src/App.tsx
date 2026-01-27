@@ -23,21 +23,14 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route
-          path="/"
+          path="/search"
           element={
             <Protect>
               <Search />
             </Protect>
           }
         />
-        <Route
-          path="/movie/:_id"
-          element={
-            <Protect>
-              <Movie />
-            </Protect>
-          }
-        />
+        <Route path="/movie/:_id" element={<Movie />} />
         <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>
     </>

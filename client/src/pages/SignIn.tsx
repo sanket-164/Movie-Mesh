@@ -40,7 +40,7 @@ const SignIn = () => {
         sessionStorage.setItem("token", data.token);
       }
 
-      navigate("/");
+      navigate("/search");
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
         setErrorMessage(error.response?.data?.error || "Sign In Failed");
