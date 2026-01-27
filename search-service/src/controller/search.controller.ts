@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Movie from '../model/Movie';
+import Comment from '../model/Comment';
 import mongoose from 'mongoose';
 import SearchProducer from '../producer/search.producer';
 
@@ -15,6 +16,11 @@ type SearchMoviesQuery = {
     path?: string;
     paginationToken?: string;
     q: string;
+};
+
+type MovieCommentsQuery = {
+    skip?: string;
+    limit?: string;
 };
 
 const SEARCH_TOPIC = 'user-search';
@@ -106,6 +112,35 @@ class SearchController {
             });
         } catch (error) {
             console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+
+    public movieComments = async (req: Request<{ movieId: string }, {}, {}, MovieCommentsQuery>, res: Response): Promise<void> => {
+        const { movieId } = req.params;
+        const { skip, limit } = req.query;
+
+        try {
+
+            if (!movieId || !mongoose.Types.ObjectId.isValid(movieId)) {
+                res.status(400).json({ message: 'Movie ID is invalid' });
+                return;
+            }
+
+            const skipNumber = skip ? parseInt(skip) : 0;
+            const limitNumber = limit ? parseInt(limit) : 5;
+
+            const comments = await Comment.find({ movie_id: movieId })
+                .skip(skipNumber)
+                .limit(limitNumber);
+
+            res.status(200).json(comments);
+
+            await this.searchProducer.sendMessage(SEARCH_TOPIC, {
+                userId: req.user || 0,
+                query: req.url
+            });
+        } catch (error) {
             res.status(500).json({ message: 'Internal server error' });
         }
     }

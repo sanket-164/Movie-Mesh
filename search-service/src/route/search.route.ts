@@ -22,6 +22,7 @@ class SearchRoute {
 
         this.router.get('/movies', this.searchController.searchMovies)
         this.router.get('/movies/:id', this.searchController.findMovieById);
+        this.router.get('/comments/:movieId', this.searchController.movieComments);
     }
 }
 
