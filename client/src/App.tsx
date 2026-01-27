@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import SignIn from "./components/SignIn";
-import SignUp from "./components/SignUp";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
+import Search from "./pages/Search";
 import Protect from "./components/Protect";
 
 function App() {
@@ -24,7 +25,7 @@ function App() {
           path="/"
           element={
             <Protect>
-              <div>Search Page</div>
+              <Search />
             </Protect>
           }
         />
