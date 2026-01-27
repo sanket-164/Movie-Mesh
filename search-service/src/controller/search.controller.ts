@@ -96,11 +96,12 @@ class SearchController {
             // Visible increased performance can be seen if the skip parameter is around 1000
             // Check the results by using "skip=1000" and then paginationToken="<pagination_token_from_999th_result>"
             // This is because skip still needs to iterate through the previous documents internally
-            if (paginationToken) {
-                aggregationPipeline.push(limitStage);
-            } else {
-                aggregationPipeline.push(skipStage, limitStage);
-            }
+            aggregationPipeline.push({
+                $facet: {
+                    data: paginationToken ? [limitStage] : [skipStage, limitStage],
+                    totalMovies: [{ $count: 'count' }],
+                }
+            });
 
             const movies: MovieType[] = await Movie.aggregate(aggregationPipeline);
 
