@@ -2,11 +2,19 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 const SearchBar = ({
-  setMovieSelectedId,
+  changeSearchParams,
 }: {
-  setMovieSelectedId: React.Dispatch<React.SetStateAction<string | null>>;
+  changeSearchParams: ({
+    newQ,
+    newPath,
+    newPage,
+  }: {
+    newQ: string;
+    newPath: string;
+    newPage: string;
+  }) => void;
 }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("q") || "");
   const activeFields = (searchParams.get("path") || "title").split(",");
 
@@ -28,13 +36,12 @@ const SearchBar = ({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setMovieSelectedId(null);
-    setSearchParams({
-      q: query,
-      path: Object.keys(fields)
+    changeSearchParams({
+      newQ: query,
+      newPath: Object.keys(fields)
         .filter((field) => fields[field as keyof typeof fields])
         .join(","),
-      page: "1",
+      newPage: "1",
     });
   };
 

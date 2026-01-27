@@ -5,6 +5,7 @@ import Movie from "../components/Movie";
 import { searchByQuery } from "../api/search.api";
 import { useSearchParams } from "react-router-dom";
 import type { MovieCardType } from "../types";
+import Pagination from "../components/Pagination";
 
 const PAGINATION_LIMIT = 8;
 
@@ -17,6 +18,23 @@ const Search = () => {
   const q = searchParams.get("q") || "";
   const path = searchParams.get("path") || "title";
   const page = searchParams.get("page") || "1";
+
+  const changeSearchParams = ({
+    newQ,
+    newPath,
+    newPage,
+  }: {
+    newQ: string;
+    newPath: string;
+    newPage: string;
+  }) => {
+    setMovieSelectedId(null);
+    setSearchParams({
+      q: newQ,
+      path: newPath,
+      page: newPage,
+    });
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -37,7 +55,7 @@ const Search = () => {
   return (
     <>
       <div className="sticky-top bg-white shadow-sm z-1">
-        <SearchBar setMovieSelectedId={setMovieSelectedId} />
+        <SearchBar changeSearchParams={changeSearchParams} />
       </div>
       {loading && <div className="container py-5">Loading...</div>}
 
@@ -62,26 +80,10 @@ const Search = () => {
 
             {/* Pagination */}
             {!movieSelectedId && totalResults > PAGINATION_LIMIT && (
-              <div className="d-flex justify-content-center mt-4">
-                <nav>
-                  <ul className="pagination pagination-sm">
-                    {Array.from(
-                      { length: Math.ceil(totalResults / PAGINATION_LIMIT) },
-                      (_, idx) => idx + 1,
-                    ).map((pageNum) => (
-                      <li
-                        key={pageNum}
-                        className={`page-item ${pageNum === parseInt(page) ? "active" : ""}`}
-                        onClick={() =>
-                          setSearchParams({ q, path, page: pageNum.toString() })
-                        }
-                      >
-                        <button className="page-link">{pageNum}</button>
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-              </div>
+              <Pagination
+                totalPages={Math.ceil(totalResults / PAGINATION_LIMIT)}
+                changeSearchParams={changeSearchParams}
+              />
             )}
           </div>
         </div>
