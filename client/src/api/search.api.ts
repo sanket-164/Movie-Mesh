@@ -12,7 +12,7 @@ const searchAPI = axios.create({
 
 export const searchByQuery = async (queryString: string) => {
     const response = await searchAPI.get(`/movies?${queryString}`);
-    return response.data;
+    return response.data[0];
 }
 
 export const searchById = async (id: string) => {

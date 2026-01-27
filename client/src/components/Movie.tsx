@@ -1,45 +1,16 @@
 import { useEffect, useState } from "react";
 import { searchById } from "../api/search.api";
-
-type Movie = {
-  _id: string;
-  title: string;
-  year: number;
-  poster: string;
-  plot: string;
-  fullplot: string;
-  genres: string[];
-  runtime: number;
-  rated: string;
-  released: string;
-  languages: string[];
-  countries: string[];
-  cast: string[];
-  directors: string[];
-  writers: string[];
-  imdb?: {
-    rating: number;
-  };
-  tomatoes?: {
-    viewer: {
-      meter: number;
-    };
-  };
-  awards?: {
-    text: string;
-  };
-};
+import type { MovieType } from "../types";
 
 const Movie = ({ movieId }: { movieId: string }) => {
   const [loading, setLoading] = useState(true);
-  const [movie, setMovie] = useState<Movie | null>(null);
-
+  const [movie, setMovie] = useState<MovieType | null>(null);
   useEffect(() => {
     const fetchMovie = async () => {
       if (!movieId) return;
 
       const response = await searchById(movieId);
-      setMovie(response as Movie);
+      setMovie(response as MovieType);
       setLoading(false);
     };
 

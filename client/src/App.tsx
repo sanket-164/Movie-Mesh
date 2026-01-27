@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Search from "./pages/Search";
@@ -7,16 +6,6 @@ import Protect from "./components/Protect";
 import Movie from "./pages/Movie";
 
 function App() {
-  const navigate = useNavigate();
-  const token =
-    localStorage.getItem("token") || sessionStorage.getItem("token");
-
-  useEffect(() => {
-    if (!token) {
-      navigate("/signin");
-    }
-  }, [token, navigate]);
-
   return (
     <>
       <Routes>
