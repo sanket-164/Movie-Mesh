@@ -31,7 +31,7 @@ function App() {
           }
         />
         <Route
-          path="/movie/:id"
+          path="/movie/:_id"
           element={
             <Protect>
               <Movie />
