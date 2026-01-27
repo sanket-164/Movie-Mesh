@@ -1,17 +1,55 @@
 import React from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { signIn } from "../api/auth.api";
+import { AxiosError } from "axios";
+import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+  });
   const [rememberMe, setRememberMe] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setErrorMessage("");
+    const { name, value } = e.target;
+
+    setUser((prevUser) => ({
+      ...prevUser,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Email:", email);
-    console.log("Password:", password);
+
+    setLoading(true);
+
+    try {
+      const data = await signIn(user.email, user.password);
+      console.log("Sign In Successful:", data);
+
+      if (rememberMe) {
+        localStorage.setItem("token", data.token);
+      } else {
+        sessionStorage.setItem("token", data.token);
+      }
+
+      navigate("/");
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        setErrorMessage(error.response?.data?.error || "Sign In Failed");
+      } else {
+        alert("An unexpected error occurred.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -25,6 +63,12 @@ const SignIn = () => {
           <p className="text-muted small mb-0">Sign in to continue</p>
         </div>
 
+        {errorMessage && (
+          <div className="alert alert-danger text-center" role="alert">
+            {errorMessage}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label className="form-label small">Email</label>
@@ -32,8 +76,10 @@ const SignIn = () => {
               type="email"
               className="form-control"
               placeholder="you@example.com"
+              name="email"
+              value={user.email}
               required={true}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleChange}
             />
           </div>
 
@@ -43,8 +89,10 @@ const SignIn = () => {
               type="password"
               className="form-control"
               placeholder="••••••••"
+              name="password"
+              value={user.password}
               required={true}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handleChange}
             />
           </div>
 
@@ -66,8 +114,12 @@ const SignIn = () => {
             </a> */}
           </div>
 
-          <button className="btn btn-dark w-100 py-2" type="submit">
-            Sign In
+          <button
+            className="btn btn-dark w-100 py-2"
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? "Signing In..." : "Sign In"}
           </button>
         </form>
 

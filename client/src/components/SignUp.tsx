@@ -1,20 +1,51 @@
 import React from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { signUp } from "../api/auth.api";
+import { AxiosError } from "axios";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setErrorMessage("");
+
+    const { name, value } = e.target;
+
+    setUser((prevUser) => ({
+      ...prevUser,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle sign-up logic here
-    console.log("Full Name:", fullName);
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("Confirm Password:", confirmPassword);
+
+    if (user.password !== user.confirmPassword) {
+      setErrorMessage("Passwords do not match");
+      return;
+    }
+
+    try {
+      const data = await signUp(user.name, user.email, user.password);
+      console.log("Sign Up Successful:", data);
+      navigate("/signin");
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        setErrorMessage(error.response?.data?.error || "Sign Up Failed");
+      } else {
+        alert("An unexpected error occurred.");
+      }
+    }
   };
 
   return (
@@ -28,6 +59,12 @@ const SignUp = () => {
           <p className="text-muted small mb-0">Sign up to get started</p>
         </div>
 
+        {errorMessage && (
+          <div className="alert alert-danger text-center" role="alert">
+            {errorMessage}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label className="form-label small">Full Name</label>
@@ -35,8 +72,10 @@ const SignUp = () => {
               type="text"
               className="form-control"
               placeholder="John Doe"
+              name="name"
+              value={user.name}
               required={true}
-              onChange={(e) => setFullName(e.target.value)}
+              onChange={handleChange}
             />
           </div>
 
@@ -46,8 +85,10 @@ const SignUp = () => {
               type="email"
               className="form-control"
               placeholder="you@example.com"
+              name="email"
+              value={user.email}
               required={true}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleChange}
             />
           </div>
 
@@ -57,8 +98,10 @@ const SignUp = () => {
               type="password"
               className="form-control"
               placeholder="••••••••"
+              name="password"
+              value={user.password}
               required={true}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handleChange}
             />
           </div>
 
@@ -68,8 +111,10 @@ const SignUp = () => {
               type="password"
               className="form-control"
               placeholder="••••••••"
+              name="confirmPassword"
+              value={user.confirmPassword}
               required={true}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={handleChange}
             />
           </div>
 
