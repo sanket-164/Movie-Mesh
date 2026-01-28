@@ -6,6 +6,7 @@ import MainLayout from "./layouts/MainLayout";
 import Search from "./pages/Search";
 import Movie from "./pages/Movie";
 import Home from "./pages/Home";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -33,7 +34,7 @@ function App() {
             }
           />
         </Route>
-        <Route path="*" element={<div>404 Not Found</div>} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );
