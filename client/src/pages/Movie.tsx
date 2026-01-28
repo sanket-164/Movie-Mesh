@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { searchById } from "../api/search.api";
 import type { MovieType } from "../types";
 import MovieLoader from "../components/MovieLoader";
+import fallbackImage from "../images/Movie-Mesh.png";
 
 const Movie = () => {
   const { movieId } = useParams<{ movieId: string }>();
@@ -30,9 +31,12 @@ const Movie = () => {
             {/* Poster */}
             <div className="col-12 col-md-4 col-lg-3">
               <img
-                src={movie.poster}
+                src={movie.poster || fallbackImage}
                 alt={movie.title}
                 className="img-fluid rounded shadow-sm"
+                onError={(e) => {
+                  e.currentTarget.src = fallbackImage;
+                }}
               />
             </div>
 
@@ -41,7 +45,7 @@ const Movie = () => {
               <h2 className="fw-semibold mb-1">{movie.title}</h2>
 
               <div className="text-muted mb-2">
-                {movie.year} • {movie.runtime} min • {movie.rated}
+                {movie.year} • {movie.runtime} min • {movie.rated || "N/A"}
               </div>
 
               {/* Ratings */}
@@ -59,7 +63,7 @@ const Movie = () => {
 
               {/* Genres */}
               <div className="mb-3">
-                {movie.genres.map((genre, idx) => (
+                {movie.genres?.map((genre, idx) => (
                   <span
                     key={idx}
                     className="badge bg-light text-dark border me-2"
@@ -70,7 +74,7 @@ const Movie = () => {
               </div>
 
               {/* Short Plot */}
-              <p className="text-muted">{movie.plot}</p>
+              <p className="text-muted">{movie.plot || "N/A"}</p>
             </div>
           </div>
 
@@ -81,7 +85,7 @@ const Movie = () => {
           <div className="row mb-4">
             <div className="col">
               <h5 className="fw-semibold mb-2">Story</h5>
-              <p className="text-muted">{movie.fullplot}</p>
+              <p className="text-muted">{movie.fullplot || "N/A"}</p>
             </div>
           </div>
 
@@ -90,7 +94,7 @@ const Movie = () => {
             <div className="col-12 col-md-4">
               <h6 className="fw-semibold">Cast</h6>
               <ul className="list-unstyled text-muted small">
-                {movie.cast.map((actor, idx) => (
+                {movie.cast?.map((actor, idx) => (
                   <li key={idx}>{actor}</li>
                 ))}
               </ul>
@@ -99,7 +103,7 @@ const Movie = () => {
             <div className="col-12 col-md-4">
               <h6 className="fw-semibold">Director</h6>
               <ul className="list-unstyled text-muted small">
-                {movie.directors.map((dir, idx) => (
+                {movie.directors?.map((dir, idx) => (
                   <li key={idx}>{dir}</li>
                 ))}
               </ul>
@@ -108,7 +112,7 @@ const Movie = () => {
             <div className="col-12 col-md-4">
               <h6 className="fw-semibold">Writers</h6>
               <ul className="list-unstyled text-muted small">
-                {movie.writers.map((writer, idx) => (
+                {movie.writers?.map((writer, idx) => (
                   <li key={idx}>{writer}</li>
                 ))}
               </ul>
@@ -120,13 +124,13 @@ const Movie = () => {
 
           <div className="row text-muted small">
             <div className="col-6 col-md-3">
-              <strong>Language:</strong> {movie.languages.join(", ")}
+              <strong>Language:</strong> {movie.languages?.join(", ") || "N/A"}
             </div>
             <div className="col-6 col-md-3">
-              <strong>Country:</strong> {movie.countries.join(", ")}
+              <strong>Country:</strong> {movie.countries?.join(", ") || "N/A"}
             </div>
             <div className="col-6 col-md-3">
-              <strong>Awards:</strong> {movie.awards?.text}
+              <strong>Awards:</strong> {movie.awards?.text || "N/A"}
             </div>
             <div className="col-6 col-md-3">
               <strong>Released:</strong>{" "}

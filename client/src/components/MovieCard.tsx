@@ -1,15 +1,8 @@
+import fallbackImage from "../images/Movie-Mesh.png";
+import type { MovieCardType } from "../types";
+
 type MovieCardProps = {
-  movie: {
-    _id: string;
-    title: string;
-    year: number;
-    poster: string;
-    plot: string;
-    genres: string[];
-    imdb?: {
-      rating: number;
-    };
-  };
+  movie: MovieCardType;
 };
 
 const MovieCard = ({ movie }: MovieCardProps) => {
@@ -18,14 +11,15 @@ const MovieCard = ({ movie }: MovieCardProps) => {
   return (
     <div className="card h-100 border-0 shadow-sm">
       <img
-        src={poster}
+        src={poster || fallbackImage}
         alt={title}
-        className="card-img-top"
+        className="card-img-top w-100"
+        onError={(e) => {
+          e.currentTarget.src = fallbackImage;
+        }}
         style={{
-          height: "408px",
-          width: "300px",
+          aspectRatio: "3 / 4",
           objectFit: "cover",
-          aspectRatio: "auto 300 / 408",
         }}
       />
 

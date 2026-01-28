@@ -21,7 +21,6 @@ const Search = () => {
   useEffect(() => {
     async function fetchData() {
       const queryString = `q=${encodeURIComponent(q)}&path=${path}&limit=${PAGINATION_LIMIT}&skip=${(parseInt(page) - 1) * PAGINATION_LIMIT}`;
-
       const response = await searchByQuery(queryString);
 
       setMovies(response.data as MovieCardType[]);
@@ -48,7 +47,11 @@ const Search = () => {
                 <div
                   key={movie._id}
                   className="col-12 col-sm-6 col-md-4 col-lg-3"
-                  onClick={() => navigate(`/movie/${movie._id}`)}
+                  onClick={() =>
+                    navigate(
+                      `/movie/${movie._id}?q=${encodeURIComponent(q)}&path=${path}&page=${page}`,
+                    )
+                  }
                 >
                   <MovieCard movie={movie} />
                 </div>
