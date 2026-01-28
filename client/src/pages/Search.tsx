@@ -14,7 +14,7 @@ const Search = () => {
   const [loading, setLoading] = useState(true);
   const [totalResults, setTotalResults] = useState(0);
   const [searchParams] = useSearchParams();
-  const q = searchParams.get("q") || "";
+  const q = searchParams.get("q") || "Comedy";
   const path = searchParams.get("path") || "title";
   const page = searchParams.get("page") || "1";
 

@@ -5,7 +5,7 @@ const SearchBar = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const [query, setQuery] = useState(searchParams.get("q") || "");
+  const [query, setQuery] = useState(searchParams.get("q") || "Comedy");
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const getInitialFields = () => {
@@ -30,7 +30,9 @@ const SearchBar = () => {
       .filter((key) => fields[key as keyof typeof fields])
       .join(",");
 
-    navigate(`/?q=${encodeURIComponent(query)}&path=${activePaths}&page=1`);
+    navigate(
+      `search/?q=${encodeURIComponent(query)}&path=${activePaths}&page=1`,
+    );
   };
 
   return (
