@@ -4,93 +4,104 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 const SearchBar = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
   const [query, setQuery] = useState(searchParams.get("q") || "");
-  const activeFields = (searchParams.get("path") || "title").split(",");
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
-  const [fields, setFields] = useState({
-    title: activeFields.includes("title"),
-    plot: activeFields.includes("plot"),
-    genres: activeFields.includes("genres"),
-    cast: activeFields.includes("cast"),
-    directors: activeFields.includes("directors"),
-    writers: activeFields.includes("writers"),
-  });
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
+  const getInitialFields = () => {
+    const activeFields = (searchParams.get("path") || "title").split(",");
+    return {
+      title: activeFields.includes("title"),
+      plot: activeFields.includes("plot"),
+      genres: activeFields.includes("genres"),
+      cast: activeFields.includes("cast"),
+      directors: activeFields.includes("directors"),
+      writers: activeFields.includes("writers"),
+    };
   };
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFields({
-      ...fields,
-      [e.target.name]: e.target.checked,
-    });
-  };
+  const [fields, setFields] = useState(getInitialFields);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate(
-      `/?q=${encodeURIComponent(query)}&path=${Object.keys(fields)
-        .filter((field) => fields[field as keyof typeof fields])
-        .join(",")}&page=1`,
-    );
+    if (!query.trim()) return;
+
+    const activePaths = Object.keys(fields)
+      .filter((key) => fields[key as keyof typeof fields])
+      .join(",");
+
+    navigate(`/?q=${encodeURIComponent(query)}&path=${activePaths}&page=1`);
   };
 
   return (
     <div className="bg-white border-bottom">
       <div className="container py-3">
         <form onSubmit={handleSubmit}>
-          <div className="row align-items-center g-3">
-            {/* Search Input */}
-            <div className="col-12 col-md-6 col-lg-7">
+          {/* Search Row */}
+          <div className="row g-2 align-items-center">
+            <div className="col-12 col-md-8">
               <input
                 type="text"
-                className="form-control"
-                placeholder="Search movies..."
+                className="form-control form-control-lg"
+                placeholder="Search movies, actors, directors..."
                 value={query}
-                onChange={(e) => {
-                  handleInputChange(e);
-                }}
+                onChange={(e) => setQuery(e.target.value)}
               />
             </div>
 
-            {/* Fields */}
-            <div className="col-12 col-md-4 col-lg-4">
-              <div className="d-flex flex-wrap gap-3">
-                {Object.keys(fields).map((field) => (
-                  <div className="form-check" key={field}>
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      name={field}
-                      id={field}
-                      checked={fields[field as keyof typeof fields]}
-                      onChange={handleCheckboxChange}
-                    />
-                    <label
-                      className="form-check-label small text-capitalize"
-                      htmlFor={field}
-                    >
-                      {field}
-                    </label>
-                  </div>
-                ))}
-              </div>
+            <div className="col-6 col-md-2">
+              <button
+                type="button"
+                className="btn btn-outline-secondary w-100"
+                onClick={() => setShowAdvanced((p) => !p)}
+              >
+                Filters
+              </button>
             </div>
 
-            {/* Search Button */}
-            <div className="col-12 col-md-2 col-lg-1">
+            <div className="col-6 col-md-2">
               <button
+                type="submit"
                 className="btn btn-dark w-100"
-                disabled={
-                  query.trim() === "" ||
-                  !Object.values(fields).some((value) => value)
-                }
+                disabled={!query.trim()}
               >
                 Search
               </button>
             </div>
           </div>
+
+          {/* Advanced Filters */}
+          {showAdvanced && (
+            <div className="mt-3 p-3 bg-light rounded">
+              <div className="row g-2">
+                {Object.entries(fields).map(([field, checked]) => (
+                  <div key={field} className="col-6 col-md-4 col-lg-2">
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id={field}
+                        name={field}
+                        checked={checked}
+                        onChange={(e) =>
+                          setFields((prev) => ({
+                            ...prev,
+                            [field]: e.target.checked,
+                          }))
+                        }
+                      />
+                      <label
+                        className="form-check-label text-capitalize small"
+                        htmlFor={field}
+                      >
+                        {field.replace(/s$/, "")}
+                      </label>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </form>
       </div>
     </div>
