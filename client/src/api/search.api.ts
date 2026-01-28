@@ -6,9 +6,26 @@ const searchAPI = axios.create({
     baseURL: API_URL,
     headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("token") || sessionStorage.getItem("token") || ""}`,
     }
 });
+
+// Dynamically inject token on EVERY request
+searchAPI.interceptors.request.use(
+    (config) => {
+        // Check sessionStorage FIRST, Then fallback to localStorage
+        const token = sessionStorage.getItem("token") || localStorage.getItem("token");
+
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        } else {
+            // Explicitly remove header if no token exists (prevents stale headers)
+            delete config.headers.Authorization;
+        }
+
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
 
 export const searchByQuery = async (queryString: string) => {
     const response = await searchAPI.get(`/movies?${queryString}`);

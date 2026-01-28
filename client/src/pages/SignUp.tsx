@@ -36,8 +36,7 @@ const SignUp = () => {
     }
 
     try {
-      const data = await signUp(user.name, user.email, user.password);
-      console.log("Sign Up Successful:", data);
+      await signUp(user.name, user.email, user.password);
       navigate("/signin");
     } catch (error: unknown) {
       if (error instanceof AxiosError) {

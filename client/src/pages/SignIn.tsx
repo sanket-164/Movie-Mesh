@@ -32,7 +32,6 @@ const SignIn = () => {
 
     try {
       const data = await signIn(user.email, user.password);
-      console.log("Sign In Successful:", data);
 
       if (rememberMe) {
         localStorage.setItem("token", data.token);

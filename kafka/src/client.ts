@@ -6,8 +6,13 @@ class KafkaClient {
 
     private constructor() {
         this.kafka = new kafka.Kafka({
-            clientId: "movie-search-service",
-            brokers: [process.env.KAFKA_BROKER || "localhost:9092"],
+            clientId: 'movie-search-service',
+            brokers: [process.env.KAFKA_BROKER || 'broker:9092'],
+            connectionTimeout: 10000,
+            retry: {
+                initialRetryTime: 5000,
+                retries: 20,
+            },
         });
     }
 
