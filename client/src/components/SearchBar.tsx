@@ -36,13 +36,18 @@ const SearchBar = () => {
     );
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
+    navigate("/signin");
+  };
+
   return (
     <div className="bg-white border-bottom">
       <div className="container py-3">
         <form onSubmit={handleSubmit}>
-          {/* Search Row */}
           <div className="row g-2 align-items-center">
-            {/* Logo + Search (always inline) */}
+            {/* Logo + Search */}
             <div className="col-12 col-md d-flex align-items-center gap-2">
               <img
                 src={Logo}
@@ -72,7 +77,7 @@ const SearchBar = () => {
               </button>
             </div>
 
-            {/* Search Button */}
+            {/* Search */}
             <div className="col-6 col-md-2">
               <button
                 type="submit"
@@ -82,6 +87,17 @@ const SearchBar = () => {
                 }
               >
                 Search
+              </button>
+            </div>
+
+            {/* Logout */}
+            <div className="col-12 col-md-auto">
+              <button
+                type="button"
+                className="btn btn-outline-danger w-100"
+                onClick={handleLogout}
+              >
+                Logout
               </button>
             </div>
           </div>
