@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { searchById } from "../api/search.api";
 import type { MovieType } from "../types";
 import MovieLoader from "../components/MovieLoader";
-import fallbackImage from "../images/Movie-Mesh.png";
+import fallbackImage from "../assets/Movie-Mesh.png";
 
 const Movie = () => {
   const { movieId } = useParams<{ movieId: string }>();

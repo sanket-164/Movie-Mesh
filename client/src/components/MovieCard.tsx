@@ -1,4 +1,4 @@
-import fallbackImage from "../images/Movie-Mesh.png";
+import fallbackImage from "../assets/Movie-Mesh.png";
 import type { MovieCardType } from "../types";
 
 type MovieCardProps = {

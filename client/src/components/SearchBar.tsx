@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import Logo from "../assets/Movie-Mesh-Logo.png";
 
 const SearchBar = () => {
   const navigate = useNavigate();
@@ -41,7 +42,16 @@ const SearchBar = () => {
         <form onSubmit={handleSubmit}>
           {/* Search Row */}
           <div className="row g-2 align-items-center">
-            <div className="col-12 col-md-8">
+            {/* Logo + Search (always inline) */}
+            <div className="col-12 col-md d-flex align-items-center gap-2">
+              <img
+                src={Logo}
+                alt="Movie-Mesh"
+                height={40}
+                style={{ cursor: "pointer" }}
+                onClick={() => navigate("/")}
+              />
+
               <input
                 type="text"
                 className="form-control form-control-lg"
@@ -51,6 +61,7 @@ const SearchBar = () => {
               />
             </div>
 
+            {/* Filters */}
             <div className="col-6 col-md-2">
               <button
                 type="button"
@@ -61,6 +72,7 @@ const SearchBar = () => {
               </button>
             </div>
 
+            {/* Search Button */}
             <div className="col-6 col-md-2">
               <button
                 type="submit"
@@ -83,7 +95,6 @@ const SearchBar = () => {
                         className="form-check-input"
                         type="checkbox"
                         id={field}
-                        name={field}
                         checked={checked}
                         onChange={(e) =>
                           setFields((prev) => ({
