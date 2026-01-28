@@ -26,5 +26,5 @@ dist/
 node_modules/
 .DS_Store
 .vscode/
-docker-compose.yaml
+docker-compose.local.yaml
 *.excalidraw

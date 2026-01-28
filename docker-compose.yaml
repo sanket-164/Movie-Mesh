@@ -22,7 +22,7 @@ services:
 
   mysql:
     image: mysql:latest
-    container_name: movie_search_mysql
+    container_name: mysql_service
     environment:
       MYSQL_ROOT_PASSWORD: secretpassword
       MYSQL_DATABASE: movie_search
@@ -35,7 +35,7 @@ services:
     build: ./auth-service
     container_name: auth_service
     environment:
-      DATABASE_URL: "mysql://root:secretpassword@movie_search_mysql:3306/movie_search"
+      DATABASE_URL: "mysql://root:secretpassword@mysql_service:3306/movie_search"
       JWT_SECRET: "jwt_secret_key"
       PORT: "80"
       KAFKA_BROKER: "broker:9092"
@@ -45,7 +45,7 @@ services:
 
   search-service-1:
     build: ./search-service
-    image: movie-mesh/search-service:latest
+    image: movie-mesh-search-service:latest
     container_name: search_service-1
     environment:
       MONGO_URI: "<mongodb_atlas_connection_string>"
@@ -58,7 +58,7 @@ services:
       - broker
 
   search-service-2:
-    image: movie-mesh/search-service:latest
+    image: movie-mesh-search-service:latest
     container_name: search_service-2
     environment:
       MONGO_URI: "<mongodb_atlas_connection_string>"
@@ -72,7 +72,7 @@ services:
       - broker
 
   search-service-3:
-    image: movie-mesh/search-service:latest
+    image: movie-mesh-search-service:latest
     container_name: search_service-3
     environment:
       MONGO_URI: "<mongodb_atlas_connection_string>"
@@ -119,7 +119,7 @@ services:
     build: ./kafka
     container_name: kafka_service
     environment:
-      DATABASE_URL: "mysql://root:secretpassword@movie_search_mysql:3306/movie_search"
+      DATABASE_URL: "mysql://root:secretpassword@mysql_service:3306/movie_search"
       KAFKA_BROKER: "broker:9092"
     depends_on:
       - client
