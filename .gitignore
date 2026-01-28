@@ -28,4 +28,3 @@ node_modules/
 .vscode/
 docker-compose.yaml
 *.excalidraw
-*.png

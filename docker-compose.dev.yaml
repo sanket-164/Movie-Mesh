@@ -1,0 +1,135 @@
+services:
+  broker:
+    image: apache/kafka:latest
+    container_name: broker
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092
+
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@broker:9093
+
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_NUM_PARTITIONS: 1
+
+  mysql:
+    image: mysql:latest
+    container_name: movie_search_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secretpassword
+      MYSQL_DATABASE: movie_search
+    volumes:
+      - mysql-data:/var/lib/mysql
+    depends_on:
+      - broker
+
+  auth-service:
+    build: ./auth-service
+    container_name: auth_service
+    environment:
+      DATABASE_URL: "mysql://root:secretpassword@movie_search_mysql:3306/movie_search"
+      JWT_SECRET: "jwt_secret_key"
+      PORT: "80"
+      KAFKA_BROKER: "broker:9092"
+    depends_on:
+      - broker
+      - mysql
+
+  search-service-1:
+    build: ./search-service
+    image: movie-mesh/search-service:latest
+    container_name: search_service-1
+    environment:
+      MONGO_URI: "<mongodb_atlas_connection_string>"
+      JWT_SECRET: "jwt_secret_key"
+      PORT: "80"
+      KAFKA_BROKER: "broker:9092"
+    depends_on:
+      - auth-service
+      - mysql
+      - broker
+
+  search-service-2:
+    image: movie-mesh/search-service:latest
+    container_name: search_service-2
+    environment:
+      MONGO_URI: "<mongodb_atlas_connection_string>"
+      JWT_SECRET: "jwt_secret_key"
+      PORT: "80"
+      KAFKA_BROKER: "broker:9092"
+    depends_on:
+      - search-service-1
+      - auth-service
+      - mysql
+      - broker
+
+  search-service-3:
+    image: movie-mesh/search-service:latest
+    container_name: search_service-3
+    environment:
+      MONGO_URI: "<mongodb_atlas_connection_string>"
+      JWT_SECRET: "jwt_secret_key"
+      PORT: "80"
+      KAFKA_BROKER: "broker:9092"
+    depends_on:
+      - search-service-2
+      - search-service-1
+      - auth-service
+      - mysql
+      - broker
+
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - search-service-3
+      - search-service-2
+      - search-service-1
+      - auth-service
+      - mysql
+      - broker
+
+  client:
+    build: ./client
+    container_name: movie_client
+    ports:
+      - "4173:4173"
+    environment:
+      - VITE_API_URL=http://localhost/api
+    depends_on:
+      - nginx
+      - search-service-3
+      - search-service-2
+      - search-service-1
+      - auth-service
+      - mysql
+      - broker
+
+  kafka-service:
+    build: ./kafka
+    container_name: kafka_service
+    environment:
+      DATABASE_URL: "mysql://root:secretpassword@movie_search_mysql:3306/movie_search"
+      KAFKA_BROKER: "broker:9092"
+    depends_on:
+      - client
+      - nginx
+      - search-service-3
+      - search-service-2
+      - search-service-1
+      - auth-service
+      - mysql
+      - broker
+
+volumes:
+  mysql-data:
