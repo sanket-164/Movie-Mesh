@@ -1,21 +1,8 @@
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
-const SearchBar = ({
-  changeSearchParams,
-  isLoading,
-}: {
-  changeSearchParams: ({
-    newQ,
-    newPath,
-    newPage,
-  }: {
-    newQ: string;
-    newPath: string;
-    newPage: string;
-  }) => void;
-  isLoading: boolean;
-}) => {
+const SearchBar = () => {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("q") || "");
   const activeFields = (searchParams.get("path") || "title").split(",");
@@ -29,6 +16,10 @@ const SearchBar = ({
     writers: activeFields.includes("writers"),
   });
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+  };
+
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFields({
       ...fields,
@@ -38,13 +29,11 @@ const SearchBar = ({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    changeSearchParams({
-      newQ: query,
-      newPath: Object.keys(fields)
+    navigate(
+      `/?q=${encodeURIComponent(query)}&path=${Object.keys(fields)
         .filter((field) => fields[field as keyof typeof fields])
-        .join(","),
-      newPage: "1",
-    });
+        .join(",")}&page=1`,
+    );
   };
 
   return (
@@ -59,7 +48,9 @@ const SearchBar = ({
                 className="form-control"
                 placeholder="Search movies..."
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e) => {
+                  handleInputChange(e);
+                }}
               />
             </div>
 
@@ -89,7 +80,13 @@ const SearchBar = ({
 
             {/* Search Button */}
             <div className="col-12 col-md-2 col-lg-1">
-              <button className="btn btn-dark w-100" disabled={isLoading}>
+              <button
+                className="btn btn-dark w-100"
+                disabled={
+                  query.trim() === "" ||
+                  !Object.values(fields).some((value) => value)
+                }
+              >
                 Search
               </button>
             </div>

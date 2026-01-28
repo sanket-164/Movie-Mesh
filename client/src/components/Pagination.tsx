@@ -1,21 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 
-const Pagination = ({
-  totalPages,
-  changeSearchParams,
-}: {
-  totalPages: number;
-  changeSearchParams: ({
-    newQ,
-    newPath,
-    newPage,
-  }: {
-    newQ: string;
-    newPath: string;
-    newPage: string;
-  }) => void;
-}) => {
-  const [searchParams] = useSearchParams();
+const Pagination = ({ totalPages }: { totalPages: number }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const q = searchParams.get("q") || "";
   const path = searchParams.get("path") || "title";
   const currentPage = parseInt(searchParams.get("page") || "1");
@@ -62,10 +48,10 @@ const Pagination = ({
             <button
               className="page-link"
               onClick={() =>
-                changeSearchParams({
-                  newQ: q,
-                  newPath: path,
-                  newPage: String(currentPage - 1),
+                setSearchParams({
+                  q: q,
+                  path: path,
+                  page: String(currentPage - 1),
                 })
               }
             >
@@ -86,10 +72,10 @@ const Pagination = ({
                 disabled={pageNum === "..."}
                 onClick={() =>
                   typeof pageNum === "number" &&
-                  changeSearchParams({
-                    newQ: q,
-                    newPath: path,
-                    newPage: pageNum.toString(),
+                  setSearchParams({
+                    q: q,
+                    path: path,
+                    page: pageNum.toString(),
                   })
                 }
               >
@@ -107,10 +93,10 @@ const Pagination = ({
             <button
               className="page-link"
               onClick={() =>
-                changeSearchParams({
-                  newQ: q,
-                  newPath: path,
-                  newPage: String(currentPage + 1),
+                setSearchParams({
+                  q: q,
+                  path: path,
+                  page: String(currentPage + 1),
                 })
               }
             >
