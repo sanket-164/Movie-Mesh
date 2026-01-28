@@ -77,7 +77,9 @@ const SearchBar = () => {
               <button
                 type="submit"
                 className="btn btn-dark w-100"
-                disabled={!query.trim()}
+                disabled={
+                  !query.trim() || Object.values(fields).every((v) => !v)
+                }
               >
                 Search
               </button>

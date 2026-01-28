@@ -25,6 +25,8 @@ type MovieCommentsQuery = {
 
 const SEARCH_TOPIC = 'user-search';
 
+const ALLOWED_SEARCH_PATHS = ['title', 'plot', 'genres', 'directors', 'cast', 'writers'];
+
 class SearchController {
     private searchProducer;
 
@@ -71,7 +73,7 @@ class SearchController {
 
             const skipNumber = skip ? parseInt(skip) : 0;
             const limitNumber = limit ? parseInt(limit) : 10;
-            const pathArray = path ? path.split(',') : [];
+            const pathArray = path ? path.split(',').filter(p => ALLOWED_SEARCH_PATHS.includes(p)) : ALLOWED_SEARCH_PATHS;
 
             const searchStage: mongoose.PipelineStage = {
                 $search: {
