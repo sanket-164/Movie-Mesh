@@ -6,6 +6,7 @@ import { searchByQuery } from "../api/search.api";
 import { useSearchParams } from "react-router-dom";
 import type { MovieCardType } from "../types";
 import Pagination from "../components/Pagination";
+import SearchLoader from "../components/SearchLoader";
 
 const PAGINATION_LIMIT = 8;
 
@@ -55,9 +56,17 @@ const Search = () => {
   return (
     <>
       <div className="sticky-top bg-white shadow-sm z-1">
-        <SearchBar changeSearchParams={changeSearchParams} />
+        <SearchBar
+          changeSearchParams={changeSearchParams}
+          isLoading={loading}
+        />
       </div>
-      {loading && <div className="container py-5">Loading...</div>}
+
+      {loading && (
+        <div className="container py-5">
+          <SearchLoader />
+        </div>
+      )}
 
       {!loading && (
         <div className="my-4">

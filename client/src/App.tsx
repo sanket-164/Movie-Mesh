@@ -3,7 +3,6 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Search from "./pages/Search";
 import Protect from "./components/Protect";
-import Movie from "./pages/Movie";
 
 function App() {
   return (
@@ -19,7 +18,6 @@ function App() {
             </Protect>
           }
         />
-        <Route path="/movie/:_id" element={<Movie />} />
         <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>
     </>

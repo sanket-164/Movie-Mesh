@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 
 const SearchBar = ({
   changeSearchParams,
+  isLoading,
 }: {
   changeSearchParams: ({
     newQ,
@@ -13,6 +14,7 @@ const SearchBar = ({
     newPath: string;
     newPage: string;
   }) => void;
+  isLoading: boolean;
 }) => {
   const [searchParams] = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("q") || "");
@@ -87,7 +89,9 @@ const SearchBar = ({
 
             {/* Search Button */}
             <div className="col-12 col-md-2 col-lg-1">
-              <button className="btn btn-dark w-100">Search</button>
+              <button className="btn btn-dark w-100" disabled={isLoading}>
+                Search
+              </button>
             </div>
           </div>
         </form>

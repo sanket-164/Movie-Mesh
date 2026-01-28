@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { searchById } from "../api/search.api";
 import type { MovieType } from "../types";
+import MovieLoader from "./MovieLoader";
 
 const Movie = ({ movieId }: { movieId: string }) => {
   const [loading, setLoading] = useState(true);
@@ -19,7 +20,7 @@ const Movie = ({ movieId }: { movieId: string }) => {
 
   return (
     <div className="container py-5">
-      {loading && <div>Loading...</div>}
+      {loading && <MovieLoader />}
       {!loading && movie && (
         <>
           <div className="row g-4">
