@@ -1,3 +1,10 @@
+export type Suggestion = {
+    _id: string;
+    title: string;
+    poster: string;
+    year: number;
+};
+
 export type MovieCardType = {
     _id: string;
     title: string;

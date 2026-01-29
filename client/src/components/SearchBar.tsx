@@ -1,10 +1,17 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Logo from "../assets/Movie-Mesh-Logo.png";
+import { getSearchSuggestions } from "../api/search.api";
+import type { Suggestion } from "../types";
+import fallbackImage from "../assets/Movie-Mesh.png";
+
+const SEARCH_SUGGESTION_LIMIT = 5;
 
 const SearchBar = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const [query, setQuery] = useState(searchParams.get("q") || "Comedy");
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -22,6 +29,29 @@ const SearchBar = () => {
   };
 
   const [fields, setFields] = useState(getInitialFields);
+
+  const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setQuery(value);
+
+    if (!value.trim()) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    try {
+      const response = await getSearchSuggestions(
+        `q=${encodeURIComponent(value)}&limit=${SEARCH_SUGGESTION_LIMIT}`,
+      );
+
+      setSuggestions(response || []);
+      setShowSuggestions(true);
+    } catch (err) {
+      console.error(err);
+      setSuggestions([]);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,13 +87,66 @@ const SearchBar = () => {
                 onClick={() => navigate("/")}
               />
 
-              <input
-                type="text"
-                className="form-control form-control-lg"
-                placeholder="Search movies, actors, directors..."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
+              <div className="col-12 col-md d-flex align-items-center gap-2 position-relative">
+                <input
+                  type="text"
+                  className="form-control form-control-lg"
+                  placeholder="Search movies, actors, directors..."
+                  value={query}
+                  onChange={handleInputChange}
+                  onClick={() => {
+                    handleInputChange({
+                      target: { value: query },
+                    } as React.ChangeEvent<HTMLInputElement>);
+                  }}
+                  onBlur={() => {
+                    // Delay hiding suggestions to allow click event to register
+                    setTimeout(() => setShowSuggestions(false), 250);
+                  }}
+                />
+
+                {showSuggestions && suggestions.length > 0 && (
+                  <ul
+                    className="list-group position-absolute w-100 shadow "
+                    style={{
+                      top: "100%",
+                      zIndex: 1000,
+                      maxHeight: "300px",
+                      overflowY: "auto",
+                    }}
+                  >
+                    {suggestions.map((movie) => (
+                      <li
+                        key={movie._id}
+                        className="list-group-item list-group-item-action d-flex align-items-center gap-3"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => {
+                          setQuery(movie.title);
+                          setShowSuggestions(false);
+                          navigate(
+                            `/movie/${movie._id}?q=${encodeURIComponent(movie.title)}`,
+                          );
+                        }}
+                      >
+                        <img
+                          src={movie.poster || fallbackImage}
+                          alt={movie.title}
+                          width={40}
+                          height={60}
+                          style={{ objectFit: "cover" }}
+                          onError={(e) => {
+                            e.currentTarget.src = fallbackImage;
+                          }}
+                        />
+                        <div className="d-flex flex-column">
+                          <span className="fw-semibold">{movie.title}</span>
+                          <span className="text-muted">{movie.year} film</span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
 
             {/* Filters */}

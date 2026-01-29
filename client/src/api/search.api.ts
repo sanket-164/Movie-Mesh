@@ -27,6 +27,11 @@ searchAPI.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
+export const getSearchSuggestions = async (queryString: string) => {
+    const response = await searchAPI.get(`/suggestions?${queryString}`);
+    return response.data;
+}
+
 export const searchByQuery = async (queryString: string) => {
     const response = await searchAPI.get(`/movies?${queryString}`);
     return response.data[0];
