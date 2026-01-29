@@ -27,4 +27,5 @@ node_modules/
 .DS_Store
 .vscode/
 docker-compose.local.yaml
+docker-compose.kafka.yaml
 *.excalidraw

@@ -3,6 +3,7 @@ import Movie from '../model/Movie';
 import Comment from '../model/Comment';
 import mongoose from 'mongoose';
 import SearchProducer from '../producer/search.producer';
+import { title } from 'node:process';
 
 type MovieType = typeof Movie;
 
@@ -56,6 +57,51 @@ class SearchController {
                 userId: req.user || 0,
                 query: req.url
             });
+        } catch (error) {
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+
+    public searchSuggestions = async (req: Request<{}, {}, {}, { q: string, limit?: string }>, res: Response): Promise<void> => {
+        const { q, limit } = req.query;
+
+        try {
+            if (!q) {
+                res.status(400).json({ message: 'Search Query is required' });
+                return;
+            }
+
+            const suggestions = await Movie.aggregate([
+                {
+                    $search: {
+                        index: "suggestion",
+                        autocomplete: {
+                            query: q,
+                            path: "title"
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        title: 1,
+                        poster: 1,
+                        year: 1
+                    }
+                },
+                {
+                    $limit: limit ? parseInt(limit) : 5
+                }
+            ]);
+
+
+            res.status(200).json(suggestions);
+
+            await this.searchProducer.sendMessage(SEARCH_TOPIC, {
+                userId: req.user || 0,
+                query: req.url
+            });
+
         } catch (error) {
             res.status(500).json({ message: 'Internal server error' });
         }
