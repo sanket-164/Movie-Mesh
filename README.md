@@ -56,9 +56,11 @@ It uses modern backend technologies, asynchronous messaging, and containerizatio
 
 ### Prerequisites
 
+- Docker & Docker Compose
 - _sample_mflix_ dataset in MongoDB Cluster
-- MongoDB Atlas Search Index on movies collection
-- Create or modify using given json
+- MongoDB Atlas Indexes on movies collection (Create using json)
+
+1. **Search Index** - Used for movie searches
 
 ```bash
     {
@@ -66,72 +68,90 @@ It uses modern backend technologies, asynchronous messaging, and containerizatio
             "dynamic": false,
             "fields": {
                 "cast": {
-                        "analyzer": "lucene.standard",
-                        "type": "string"
-                    },
-                    "directors": {
-                        "analyzer": "lucene.standard",
-                        "type": "string"
-                    },
-                    "fullplot": {
-                        "analyzer": "lucene.english",
-                        "type": "string"
-                    },
-                    "genres": {
-                        "analyzer": "lucene.standard",
-                        "type": "string"
-                    },
-                    "plot": {
-                        "analyzer": "lucene.english",
-                        "type": "string"
-                    },
-                    "released": {
-                        "type": "date"
-                    },
-                    "title": {
-                        "analyzer": "lucene.standard",
-                        "type": "string"
-                    },
-                    "writers": {
-                        "analyzer": "lucene.standard",
-                        "type": "string"
-                    },
-                    "year": {
-                        "type": "number"
-                    }
+                    "analyzer": "lucene.standard",
+                    "type": "string"
+                },
+                "directors": {
+                    "analyzer": "lucene.standard",
+                    "type": "string"
+                },
+                "fullplot": {
+                    "analyzer": "lucene.english",
+                    "type": "string"
+                },
+                "genres": {
+                    "analyzer": "lucene.standard",
+                    "type": "string"
+                },
+                "plot": {
+                    "analyzer": "lucene.english",
+                    "type": "string"
+                },
+                "released": {
+                    "type": "date"
+                },
+                "title": {
+                    "analyzer": "lucene.standard",
+                    "type": "string"
+                },
+                "writers": {
+                    "analyzer": "lucene.standard",
+                    "type": "string"
+                },
+                "year": {
+                    "type": "number"
                 }
-            },
+            }
+        },
         "storedSource": {
             "include": [
-            "title",
-            "poster",
-            "genres",
-            "year",
-            "released",
-            "imdb",
-            "tomatoes"
+                "title",
+                "poster",
+                "genres",
+                "year",
+                "released",
+                "imdb",
+                "tomatoes"
             ]
         }
     }
 ```
 
-- Docker & Docker Compose
+2. **Autocomplete Index** - Used for movie title suggestions while typing
 
----
+```bash
+    {
+        "mappings": {
+            "dynamic": false,
+            "fields": {
+                "title": {
+                    "type": "autocomplete",
+                    "minGrams": 2,
+                    "maxGrams": 15
+                }
+            }
+        },
+        "storedSource": {
+            "include": ["title", "poster", "year"]
+        }
+    }
+```
 
-1. Clone the repository:
+### Start Locally
+
+1. Clone the repository
 
 ```bash
 git clone https://github.com/sanket-164/Movie-Mesh.git
 ```
 
-2. Navigate to the project directory:
+2. Navigate to the project directory
 
 ```bash
 cd Movie-Mesh
 ```
 
-3. Configure environment variables:
+3. Configure environment variables
 
 - Set up MongoDB Atlas connection strings in docker-compose.yaml
 
@@ -143,17 +163,17 @@ cd Movie-Mesh
       KAFKA_BROKER: "broker:9092"
 ```
 
-4. Start all services:
+4. Start all services
 
 ```bash
 docker-compose up -d
 ```
 
-5. Access the application:
+5. Access the application
    - Client: `http://localhost:4173`
    - API: `http://localhost/api`
 
-6. Stop all services:
+6. Stop all services
 
 ```bash
 docker-compose down
@@ -175,7 +195,7 @@ docker-compose down
 
 ## Contributing
 
-Contributions are welcome! Please follow these steps:
+Contributions are welcome! Please follow these steps.
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
