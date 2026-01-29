@@ -4,8 +4,10 @@ import { searchById } from "../api/search.api";
 import type { MovieType } from "../types";
 import MovieLoader from "../components/MovieLoader";
 import fallbackImage from "../assets/Movie-Mesh.png";
+import MovieComments from "../components/MovieComment";
 
 const Movie = () => {
+  const [showComments, setShowComments] = useState(false);
   const { movieId } = useParams<{ movieId: string }>();
   const [loading, setLoading] = useState(true);
   const [movie, setMovie] = useState<MovieType | null>(null);
@@ -23,7 +25,7 @@ const Movie = () => {
   }, [movieId]);
 
   return (
-    <div className="container py-5">
+    <div className="container pt-5 pb-4">
       {loading && <MovieLoader />}
       {!loading && movie && (
         <>
@@ -139,6 +141,19 @@ const Movie = () => {
           </div>
         </>
       )}
+
+      <hr className="my-4" />
+
+      <div className="text-center">
+        <button
+          className="btn btn-outline-primary"
+          onClick={() => setShowComments((p) => !p)}
+        >
+          {showComments ? "Hide Comments" : "View Comments"}
+        </button>
+      </div>
+
+      {showComments && movieId && <MovieComments movieId={movieId} />}
     </div>
   );
 };

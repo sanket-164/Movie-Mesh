@@ -3,7 +3,6 @@ import Movie from '../model/Movie';
 import Comment from '../model/Comment';
 import mongoose from 'mongoose';
 import SearchProducer from '../producer/search.producer';
-import { title } from 'node:process';
 
 type MovieType = typeof Movie;
 

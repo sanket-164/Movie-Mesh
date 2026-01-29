@@ -5,7 +5,9 @@ const MainLayout = () => {
   return (
     <>
       <SearchBar />
-      <Outlet />
+      <div className="bg-light">
+        <Outlet />
+      </div>
     </>
   );
 };

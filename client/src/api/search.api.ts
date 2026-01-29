@@ -12,7 +12,6 @@ const searchAPI = axios.create({
 // Dynamically inject token on EVERY request
 searchAPI.interceptors.request.use(
     (config) => {
-        // Check sessionStorage FIRST, Then fallback to localStorage
         const token = sessionStorage.getItem("token") || localStorage.getItem("token");
 
         if (token) {
@@ -39,5 +38,10 @@ export const searchByQuery = async (queryString: string) => {
 
 export const searchById = async (id: string) => {
     const response = await searchAPI.get(`/movies/${id}`);
+    return response.data;
+}
+
+export const getMovieComments = async (movieId: string, queryString: string) => {
+    const response = await searchAPI.get(`/comments/${movieId}?${queryString}`);
     return response.data;
 }
