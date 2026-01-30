@@ -49,7 +49,7 @@ const Search = () => {
                   className="col-12 col-sm-6 col-md-4 col-lg-3"
                   onClick={() =>
                     navigate(
-                      `/movie/${movie._id}?q=${encodeURIComponent(q)}&path=${path}&page=${page}`,
+                      `/search/${movie._id}?q=${encodeURIComponent(q)}&path=${path}&page=${page}`,
                     )
                   }
                 >

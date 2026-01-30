@@ -84,7 +84,7 @@ const SearchBar = () => {
                 alt="Movie-Mesh"
                 height={40}
                 style={{ cursor: "pointer" }}
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/explore")}
               />
 
               <div className="col-12 col-md d-flex align-items-center gap-2 position-relative">

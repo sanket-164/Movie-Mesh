@@ -2,11 +2,13 @@ import { Routes, Route } from "react-router-dom";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Protect from "./components/Protect";
-import MainLayout from "./layouts/MainLayout";
+import SearchLayout from "./layouts/SearchLayout";
+import ExploreLayout from "./layouts/ExploreLayout";
 import Search from "./pages/Search";
 import Movie from "./pages/Movie";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
+import Explore from "./pages/Explore";
 
 function App() {
   return (
@@ -16,7 +18,12 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
 
-        <Route element={<MainLayout />}>
+        <Route element={<ExploreLayout />}>
+          <Route path="/explore" element={<Explore />} />
+          <Route path="/movies/:movieId" element={<Movie />} />
+        </Route>
+
+        <Route element={<SearchLayout />}>
           <Route
             path="/search"
             element={
@@ -26,7 +33,7 @@ function App() {
             }
           />
           <Route
-            path="/movie/:movieId"
+            path="/search/:movieId"
             element={
               <Protect>
                 <Movie />

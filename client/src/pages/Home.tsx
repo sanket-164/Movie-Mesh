@@ -23,6 +23,15 @@ const Home = () => {
               Search movies by title, plot, cast, directors and more. Movie-Mesh
               helps you uncover hidden gems and cinematic stories.
             </p>
+
+            <div className="d-flex gap-3">
+              <button
+                className="btn btn-dark btn-lg rounded-pill px-4"
+                onClick={() => navigate("/explore")}
+              >
+                Start Exploring
+              </button>
+            </div>
           </div>
 
           {/* Right Visual */}
