@@ -169,11 +169,27 @@ cd Movie-Mesh
 docker-compose up -d
 ```
 
-5. Access the application
+<p style="color:red">
+NOTE: Steps 5 and 6 are required only on the first Docker Compose run.
+</p>
+
+5. Enter Auth Service container
+
+```bash
+docker exec -it auth_service sh
+```
+
+6. Apply Prisma migration
+
+```bash
+npx prisma migrate deploy
+```
+
+7. Access the application
    - Client: `http://localhost:4173`
    - API: `http://localhost/api`
 
-6. Stop all services
+8. Stop all services
 
 ```bash
 docker-compose down
