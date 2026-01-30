@@ -1,28 +1,45 @@
 import { useNavigate } from "react-router-dom";
 import Logo from "../assets/Movie-Mesh-Logo.png";
+import LogoText from "../assets/Movie-Mesh-Logo-Text.png";
 
 const ExploreBar = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="border-bottom bg-white sticky-top">
-      <div className="container py-3 d-flex justify-content-between align-items-center">
-        <div className="d-flex align-items-center gap-3">
+    <div className="border-bottom bg-white sticky-top shadow-sm">
+      <div className="container py-2 py-md-3 d-flex justify-content-between align-items-center">
+        {/* Logo Section - Responsive sizing and visibility */}
+        <div
+          className="d-flex align-items-center gap-2"
+          style={{ cursor: "pointer" }}
+          onClick={() => navigate("/explore")}
+          aria-label="Go to home page"
+        >
+          {/* Always visible icon logo - scales perfectly */}
           <img
             src={Logo}
-            alt="Movie-Mesh"
-            height={36}
-            style={{ cursor: "pointer" }}
-            onClick={() => navigate("/explore")}
+            alt="Movie-Mesh Logo"
+            className="img-fluid"
+            style={{ height: "36px", maxHeight: "40px" }}
           />
 
-          <div>
-            <h5 className="mb-0 fw-semibold">21,349 movies available</h5>
-          </div>
+          {/* Text logo: hidden on mobile, visible on medium+ screens */}
+          <img
+            src={LogoText}
+            alt="Movie-Mesh"
+            className="img-fluid"
+            style={{ height: "20px", maxHeight: "24px" }}
+          />
         </div>
 
-        <button className="btn btn-dark" onClick={() => navigate("/search")}>
-          Search Movies
+        {/* Search Button - Responsive text and sizing */}
+        <button
+          className="btn btn-dark px-3 px-md-4 py-2 fw-medium"
+          onClick={() => navigate("/search")}
+          aria-label="Search movies"
+        >
+          <span className="d-none d-sm-inline">Search Movies</span>
+          <span className="d-sm-none">Search</span>
         </button>
       </div>
     </div>

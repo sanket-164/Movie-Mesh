@@ -69,7 +69,7 @@ const SearchBar = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     sessionStorage.removeItem("token");
-    navigate("/signin");
+    navigate("/explore");
   };
 
   return (
