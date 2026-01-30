@@ -3,29 +3,22 @@ import Movie from '../model/Movie';
 import Comment from '../model/Comment';
 import mongoose from 'mongoose';
 import SearchProducer from '../producer/search.producer';
+import { SEARCH_TOPIC, ALLOWED_SEARCH_PATHS, MOVIE_PROJECTED_FIELDS, DEFAULT_MOVIE_LIMIT } from '../util/constant';
 
 type MovieType = typeof Movie;
-
-type FindMovieByIdParams = {
-    id: string;
-};
 
 type SearchMoviesQuery = {
     skip?: string;
     limit?: string;
     path?: string;
     paginationToken?: string;
-    q: string;
+    q?: string;
 };
 
 type MovieCommentsQuery = {
     skip?: string;
     limit?: string;
 };
-
-const SEARCH_TOPIC = 'user-search';
-
-const ALLOWED_SEARCH_PATHS = ['title', 'plot', 'genres', 'directors', 'cast', 'writers'];
 
 class SearchController {
     private searchProducer;
@@ -34,7 +27,7 @@ class SearchController {
         this.searchProducer = SearchProducer.getInstance();
     }
 
-    public findMovieById = async (req: Request<FindMovieByIdParams, {}, {}, {}>, res: Response): Promise<void> => {
+    public searchMovieById = async (req: Request<{ id: string }, {}, {}, {}>, res: Response): Promise<void> => {
         const movieId = req.params.id;
 
         try {
@@ -108,6 +101,8 @@ class SearchController {
 
     public searchMovies = async (req: Request<{}, {}, {}, SearchMoviesQuery>, res: Response): Promise<void> => {
         const { q, skip, limit, path, paginationToken } = req.query;
+        const limitNumber = limit ? parseInt(limit) : DEFAULT_MOVIE_LIMIT;
+        const skipNumber = skip ? parseInt(skip) : 0;
 
         try {
 
@@ -116,8 +111,6 @@ class SearchController {
                 return;
             }
 
-            const skipNumber = skip ? parseInt(skip) : 0;
-            const limitNumber = limit ? parseInt(limit) : 10;
             const pathArray = path ? path.split(',').filter(p => ALLOWED_SEARCH_PATHS.includes(p)) : ALLOWED_SEARCH_PATHS;
 
             const searchStage: mongoose.PipelineStage = {
@@ -131,7 +124,7 @@ class SearchController {
                 },
             };
 
-            const projectStage: mongoose.PipelineStage = { $project: { paginationToken: { $meta: "searchSequenceToken" }, score: { $meta: "searchScore" }, title: 1, plot: 1, poster: 1, genres: 1, year: 1, imdb: 1 } };
+            const projectStage: mongoose.PipelineStage = { $project: { paginationToken: { $meta: "searchSequenceToken" }, score: { $meta: "searchScore" }, ...MOVIE_PROJECTED_FIELDS } };
 
             const skipStage: mongoose.PipelineStage = { $skip: skipNumber };
 
@@ -152,7 +145,7 @@ class SearchController {
 
             const movies: MovieType[] = await Movie.aggregate(aggregationPipeline);
 
-            res.status(200).json(movies);
+            res.status(200).json(movies[0]);
 
             await this.searchProducer.sendMessage(SEARCH_TOPIC, {
                 userId: req.user || 0,

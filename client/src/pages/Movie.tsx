@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { searchById } from "../api/search.api";
+import { searchMovieById, exploreMovieById } from "../api/search.api";
 import type { MovieType } from "../types";
 import MovieLoader from "../components/MovieLoader";
 import fallbackImage from "../assets/Movie-Mesh.png";
@@ -16,7 +16,10 @@ const Movie = () => {
     const fetchMovie = async () => {
       if (!movieId) return;
 
-      const response = await searchById(movieId);
+      const response =
+        localStorage.getItem("token") || sessionStorage.getItem("token")
+          ? await searchMovieById(movieId)
+          : await exploreMovieById(movieId);
       setMovie(response as MovieType);
       setLoading(false);
     };
@@ -142,18 +145,22 @@ const Movie = () => {
         </>
       )}
 
-      <hr className="my-4" />
+      {(localStorage.getItem("token") || sessionStorage.getItem("token")) && (
+        <>
+          <hr className="my-4" />
 
-      <div className="text-center">
-        <button
-          className="btn btn-outline-primary"
-          onClick={() => setShowComments((p) => !p)}
-        >
-          {showComments ? "Hide Comments" : "View Comments"}
-        </button>
-      </div>
+          <div className="text-center">
+            <button
+              className="btn btn-outline-primary"
+              onClick={() => setShowComments((p) => !p)}
+            >
+              {showComments ? "Hide Comments" : "View Comments"}
+            </button>
+          </div>
 
-      {showComments && movieId && <MovieComments movieId={movieId} />}
+          {showComments && movieId && <MovieComments movieId={movieId} />}
+        </>
+      )}
     </div>
   );
 };
