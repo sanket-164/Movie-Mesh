@@ -1,6 +1,6 @@
 # Movie-Mesh
 
-**Movie-Mesh** is a scalable **microservices-based** movie search platform designed to handle high search traffic, secure authentication, and event-driven processing.
+A scalable **microservices-based** movie search platform designed to handle high search traffic, secure authentication, and event-driven processing.
 It uses modern backend technologies, asynchronous messaging, and containerization to ensure performance, scalability, and maintainability.
 
 ## Features
@@ -12,7 +12,7 @@ It uses modern backend technologies, asynchronous messaging, and containerizatio
 - Cloud-ready Databases (MongoDB Atlas & MySQL)
 - Fully Containerized using Docker & Docker Compose
 
-## 🧱 High-Level Architecture
+## High-Level Architecture
 
 ![Movie-Mesh Architecture](Architecture.png)
 
