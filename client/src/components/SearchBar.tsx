@@ -124,7 +124,7 @@ const SearchBar = () => {
                           setQuery(movie.title);
                           setShowSuggestions(false);
                           navigate(
-                            `/movie/${movie._id}?q=${encodeURIComponent(movie.title)}`,
+                            `/search/${movie._id}?q=${encodeURIComponent(movie.title)}`,
                           );
                         }}
                       >
