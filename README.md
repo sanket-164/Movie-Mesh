@@ -12,6 +12,14 @@ It uses modern backend technologies, asynchronous messaging, and containerizatio
 - Cloud-ready Databases (MongoDB Atlas & MySQL)
 - Fully Containerized using Docker & Docker Compose
 
+### Watch the demo of application
+
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=YB-c9iVh2cc">
+    <img src="https://github.com/sanket-164/Movie-Mesh/blob/main/client/src/assets/Movie-Mesh-Logo.png" alt="Watch the video" />
+  </a>
+</div>
+
 ## High-Level Architecture
 
 ![Movie-Mesh Architecture](Architecture.png)
