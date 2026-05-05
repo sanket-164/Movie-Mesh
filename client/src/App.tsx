@@ -9,6 +9,7 @@ import Movie from "./pages/Movie";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Explore from "./pages/Explore";
+import MyMovies from "./pages/MyMovies";
 
 function App() {
   return (
@@ -37,6 +38,14 @@ function App() {
             element={
               <Protect>
                 <Movie />
+              </Protect>
+            }
+          />
+          <Route
+            path="/my-movies"
+            element={
+              <Protect>
+                <MyMovies />
               </Protect>
             }
           />

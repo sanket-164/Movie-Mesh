@@ -1,4 +1,5 @@
 import axios from "axios";
+import type { MovieFormPayload } from "../types";
 
 const API_URL = import.meta.env.VITE_API_URL + "/search";
 
@@ -56,5 +57,40 @@ export const searchMovieById = async (id: string) => {
 
 export const getMovieComments = async (movieId: string, queryString: string) => {
     const response = await searchAPI.get(`/comments/${movieId}?${queryString}`);
+    return response.data;
+}
+
+export const addMovie = async (payload: MovieFormPayload) => {
+    const response = await searchAPI.post('/movies', payload);
+    return response.data;
+}
+
+export const updateMovie = async (movieId: string, payload: MovieFormPayload) => {
+    const response = await searchAPI.put(`/movies/${movieId}`, payload);
+    return response.data;
+}
+
+export const deleteMovie = async (movieId: string) => {
+    const response = await searchAPI.delete(`/movies/${movieId}`);
+    return response.data;
+}
+
+export const getUserMovies = async (queryString: string) => {
+    const response = await searchAPI.get(`/users/movies?${queryString}`);
+    return response.data;
+}
+
+export const addComment = async (movieId: string, payload: { text: string; name?: string; email?: string }) => {
+    const response = await searchAPI.post(`/comments/${movieId}`, payload);
+    return response.data;
+}
+
+export const updateComment = async (commentId: string, payload: { text: string }) => {
+    const response = await searchAPI.put(`/comments/${commentId}`, payload);
+    return response.data;
+}
+
+export const deleteComment = async (commentId: string) => {
+    const response = await searchAPI.delete(`/comments/${commentId}`);
     return response.data;
 }

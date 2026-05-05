@@ -1,9 +1,6 @@
 import mongoose from "mongoose";
 
 const movieSchema = new mongoose.Schema({
-    _id: {
-        type: mongoose.Schema.Types.ObjectId
-    },
     plot: {
         type: String
     },
@@ -35,6 +32,9 @@ const movieSchema = new mongoose.Schema({
         type: Date
     },
     directors: {
+        type: [String]
+    },
+    writers: {
         type: [String]
     },
     rated: {
@@ -109,7 +109,12 @@ const movieSchema = new mongoose.Schema({
     },
     num_mflix_comments: {
         type: Number
+    },
+    user_id: {
+        type: Number
     }
+}, {
+    timestamps: true
 });
 
 const Movie = mongoose.model("Movie", movieSchema);

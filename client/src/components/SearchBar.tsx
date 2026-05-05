@@ -174,6 +174,16 @@ const SearchBar = () => {
             </div>
 
             {/* Logout */}
+            <div className="col-6 col-md-auto">
+              <button
+                type="button"
+                className="btn btn-outline-dark w-100"
+                onClick={() => navigate("/my-movies")}
+              >
+                My Movies
+              </button>
+            </div>
+
             <div className="col-12 col-md-auto">
               <button
                 type="button"

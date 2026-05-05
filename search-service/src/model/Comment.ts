@@ -1,9 +1,6 @@
 import mongoose from "mongoose";
 
 const commentSchema = new mongoose.Schema({
-    _id: {
-        type: mongoose.Schema.Types.ObjectId
-    },
     name: {
         type: String
     },
@@ -18,7 +15,12 @@ const commentSchema = new mongoose.Schema({
     },
     date: {
         type: Date
+    },
+    user_id: {
+        type: Number
     }
+}, {
+    timestamps: true
 });
 
 const Comment = mongoose.model("Comment", commentSchema);
